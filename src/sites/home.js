@@ -1,17 +1,16 @@
 const home = {
-  props: ["loggedIn"],
-  data: function() {
+  props: ['loggedIn'],
+  data: function () {
     return {
       showReg: false
     }
   },
   methods: {
-    showRegForm: function() {
-      this.showReg = true;
+    showRegForm: function () {
+      this.showReg = true
       this.$nextTick(function () {
         this.$refs.showRegLink.click()
       })
-
     }
   },
   template: `
@@ -97,6 +96,6 @@ const home = {
     </div>
   `,
   mounted: function () {
-    feather.replace();
-  },
+    feather.replace()
+  }
 }

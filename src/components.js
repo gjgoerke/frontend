@@ -1,6 +1,6 @@
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 // Feather icon wrapper
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 
 Vue.component('feather-icon', {
   props: {
@@ -16,9 +16,9 @@ Vue.component('feather-icon', {
   `
 })
 
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 // Wrapper for bootstrap (save/load) spinner
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 
 Vue.component('bs-spinner', {
   props: {
@@ -28,7 +28,7 @@ Vue.component('bs-spinner', {
     }
   },
   computed: {
-    spinnerClass: function() {
+    spinnerClass: function () {
       return 'spinner-border spinner-border-sm text-' + this.variant
     }
   },
@@ -39,14 +39,14 @@ Vue.component('bs-spinner', {
   `
 })
 
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 // Updatable <input>
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 
 Vue.component('input-update', {
   props: ['placeholder', 'value', 'edit'],
   computed: {
-    output: function() {
+    output: function () {
       if (!this.value || this.value == '') return this.placeholder
       else return this.value
     }
@@ -59,18 +59,18 @@ Vue.component('input-update', {
   `
 })
 
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 // Updatable <textarea>
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 
 Vue.component('textarea-update', {
   props: ['placeholder', 'value', 'edit', 'rows'],
   computed: {
-    output: function() {
+    output: function () {
       if (!this.value || this.value == '') return this.placeholder
       else return this.value
     },
-    rows0: function() {
+    rows0: function () {
       if (!this.rows) return 3
       else return this.rows
     }
@@ -83,9 +83,9 @@ Vue.component('textarea-update', {
   `
 })
 
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 // Login form with API call
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 
 Vue.component('login', {
   data: function () {
@@ -96,32 +96,32 @@ Vue.component('login', {
     }
   },
   methods: {
-    submit: function() {
-      console.log('[login] login requested');
+    submit: function () {
+      console.log('[login] login requested')
       // call api
-      var data = {email: this.login, password: this.password};
-      nai.login(data, this.loginSuccess, this.loginFailed);
+      var data = { email: this.login, password: this.password }
+      nai.login(data, this.loginSuccess, this.loginFailed)
     },
-    loginSuccess: function(resp) {
-      console.log('[login] ' + JSON.stringify(resp));
+    loginSuccess: function (resp) {
+      console.log('[login] ' + JSON.stringify(resp))
       // on success, bubble login to root component
       if (!!resp && !!resp.data && resp.data.token) {
-        this.error = false;
-        var user = {user: this.login, auth: resp.data.token};
+        this.error = false
+        var user = { user: this.login, auth: resp.data.token }
         this.$root.$emit('login-event', user)
       } else {
         this.error = 'Unexpected answer from server.'
       }
     },
-    loginFailed: function(error) {
+    loginFailed: function (error) {
       if (error.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-        if (!!error.response.data) {
-          this.error = error.response.data.err;
+        console.log(error.response.data)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        if (error.response.data) {
+          this.error = error.response.data.err
         } else {
           this.error = 'Unexpected server response: ' + error.response.data
         }
@@ -129,14 +129,14 @@ Vue.component('login', {
         // The request was made but no response was received
         // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
         // http.ClientRequest in node.js
-        console.log(error.request);
+        console.log(error.request)
         this.error = 'Cannot connect to logon server. Please contact server administrator.'
       } else {
         // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
+        console.log('Error', error.message)
         this.error = 'Unexpected error: ' + error.message
       }
-      console.log(error.config);
+      console.log(error.config)
     }
   },
   computed: {
@@ -161,9 +161,9 @@ Vue.component('login', {
   `
 })
 
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 // Register form with API call
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 
 Vue.component('register', {
   data: function () {
@@ -171,24 +171,27 @@ Vue.component('register', {
       name: '',
       email: '',
       password: '',
-      registerResponse: {show: false, type: '', message: '', timeout: 0}
+      registerResponse: { show: false, type: '', message: '', timeout: 0 }
     }
   },
   methods: {
-    submit: function() {
+    submit: function () {
       // call api
-      let data = {name: this.name, email: this.email, password: this.password};
-      let self = this;
-      nai.register(data, function(resp) {
-        self.registerResponse = {show: true, type: 'success', message: `Registration successful. Your user account has been created.
-           You can now log in above using your password.`, timeout: 4000};
-      }, function(error) {
-        if (!!error.response.data.error) {
-          self.registerResponse = {show: true, type: 'danger', message: "Registration failed, reason: " + error.response.data.error};
+      let data = { name: this.name, email: this.email, password: this.password }
+      let self = this
+      nai.register(data, function (resp) {
+        self.registerResponse = { show: true,
+          type: 'success',
+          message: `Registration successful. Your user account has been created.
+           You can now log in above using your password.`,
+          timeout: 4000 }
+      }, function (error) {
+        if (error.response.data.error) {
+          self.registerResponse = { show: true, type: 'danger', message: 'Registration failed, reason: ' + error.response.data.error }
         } else {
-          self.registerResponse = {show: true, type: 'danger', message: "Registration failed, reason: " + error};
+          self.registerResponse = { show: true, type: 'danger', message: 'Registration failed, reason: ' + error }
         }
-      });
+      })
     }
   },
   template: `
@@ -215,22 +218,22 @@ Vue.component('register', {
   `
 })
 
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 // General purpose loading animation
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 
 Vue.component('loading-bar', {
   props: ['progress'],
   computed: {
-    progress0: function() {
-      if (!!this.progress) {
+    progress0: function () {
+      if (this.progress) {
         return this.progress
       } else {
         return 100
       }
     },
-    progressStyle: function() {
-      return "width: " + this.progress0 + "%";
+    progressStyle: function () {
+      return 'width: ' + this.progress0 + '%'
     }
   },
   template: `
@@ -240,9 +243,9 @@ Vue.component('loading-bar', {
   `
 })
 
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 // General purpose dismissable alert box
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 
 Vue.component('alert', {
   props: {
@@ -259,23 +262,23 @@ Vue.component('alert', {
       default: null
     }
   },
-  data: function() {
+  data: function () {
     return {
       show0: this.hasMessage
     }
   },
   computed: {
-    alertClass: function() {
+    alertClass: function () {
       return 'alert-' + this.variant
     }
   },
   methods: {
-    hideAlert: function() {
+    hideAlert: function () {
       this.$emit('dismiss')
     }
   },
   watch: {
-    timeout(newValue) {
+    timeout (newValue) {
       if (!!newValue && newValue > 0) {
         setTimeout(this.hideAlert, this.timeout)
       }
@@ -293,9 +296,9 @@ Vue.component('alert', {
   `
 })
 
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 // General purpose modal
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 
 Vue.component('modal', {
   props: ['name'],
@@ -330,61 +333,60 @@ Vue.component('modal', {
   `
 })
 
-
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 // Theory card for dashboard
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 
 Vue.component('theory-card', {
   props: ['theory'],
-  data: function() {
+  data: function () {
     return {
       deleteRequested: false
     }
   },
   methods: {
-    deleteMe: function() {
+    deleteMe: function () {
       this.$parent.$emit('delete-theory', this.theory)
     },
-    requestDelete: function() {
-      this.deleteRequested = true;
+    requestDelete: function () {
+      this.deleteRequested = true
       this.$nextTick(function () {
-      feather.replace();
-    })
-    },
-    cancelDelete: function() {
-      this.deleteRequested = false;
-      this.$nextTick(function () {
-        feather.replace();
+        feather.replace()
       })
     },
-    open: function() {
-      router.push('/theory/'+this.theory._id)
+    cancelDelete: function () {
+      this.deleteRequested = false
+      this.$nextTick(function () {
+        feather.replace()
+      })
     },
-    clone: function() {
+    open: function () {
+      router.push('/theory/' + this.theory._id)
+    },
+    clone: function () {
       this.$parent.$emit('clone-theory', this.theory)
     }
   },
   computed: {
-    date: function() {
-      return new Date(this.theory.lastUpdate);
+    date: function () {
+      return new Date(this.theory.lastUpdate)
     },
-    updated: function() {
-      return this.date.toLocaleString();
+    updated: function () {
+      return this.date.toLocaleString()
     },
-    descLimit: function() {return 80 },
-    description: function() {
-      var desc = this.theory.description;
+    descLimit: function () { return 80 },
+    description: function () {
+      var desc = this.theory.description
       if (desc.length > this.descLimit) {
-        return desc.substr(0,this.descLimit) + "...";
+        return desc.substr(0, this.descLimit) + '...'
       } else {
-        return desc;
+        return desc
       }
     }
   },
   created: function () {
     this.$nextTick(function () {
-      feather.replace();
+      feather.replace()
     })
   },
   template: `
@@ -428,58 +430,57 @@ Vue.component('theory-card', {
   `
 })
 
-
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 // query card for dashboard
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 
 Vue.component('query-card', {
   props: ['query'],
-  data: function() {
+  data: function () {
     return {
       deleteRequested: false
     }
   },
   methods: {
-    deleteMe: function() {
+    deleteMe: function () {
       this.$parent.$emit('delete-query', this.query)
     },
-    requestDelete: function() {
-      this.deleteRequested = true;
+    requestDelete: function () {
+      this.deleteRequested = true
       this.$nextTick(function () {
-      feather.replace();
-    })
-    },
-    cancelDelete: function() {
-      this.deleteRequested = false;
-      this.$nextTick(function () {
-        feather.replace();
+        feather.replace()
       })
     },
-    open: function() {
-      router.push('/query/'+this.query._id)
+    cancelDelete: function () {
+      this.deleteRequested = false
+      this.$nextTick(function () {
+        feather.replace()
+      })
+    },
+    open: function () {
+      router.push('/query/' + this.query._id)
     }
   },
   computed: {
-    date: function() {
-      return new Date(this.query.lastUpdate);
+    date: function () {
+      return new Date(this.query.lastUpdate)
     },
-    updated: function() {
-      return this.date.toLocaleString();
+    updated: function () {
+      return this.date.toLocaleString()
     },
-    descLimit: function() {return 80 },
-    description: function() {
-      var desc = this.query.description;
+    descLimit: function () { return 80 },
+    description: function () {
+      var desc = this.query.description
       if (desc.length > this.descLimit) {
-        return desc.substr(0,this.descLimit) + "...";
+        return desc.substr(0, this.descLimit) + '...'
       } else {
-        return desc;
+        return desc
       }
     }
   },
   created: function () {
     this.$nextTick(function () {
-      feather.replace();
+      feather.replace()
     })
   },
   template: `
@@ -519,92 +520,92 @@ Vue.component('query-card', {
   `
 })
 
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 // Quill component
-////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////
 
-let Inline = Quill.import('blots/inline');
+let Inline = Quill.import('blots/inline')
 
 class ConnectiveBlot extends Inline {
-  static create(data) {
-    let node = super.create();
-    node.setAttribute('id', data.id);
-    node.classList.add('annotator-connective');
-    node.setAttribute('data-connective', data.connective.code);
-    node.setAttribute('title', data.connective.name);
-    return node;
+  static create (data) {
+    let node = super.create()
+    node.setAttribute('id', data.id)
+    node.classList.add('annotator-connective')
+    node.setAttribute('data-connective', data.connective.code)
+    node.setAttribute('title', data.connective.name)
+    return node
   }
 
-  static formats(node) {
+  static formats (node) {
     return {
       id: node.getAttribute('id'),
       connective: {
         code: node.getAttribute('data-connective'),
         name: node.getAttribute('title')
       }
-    };
+    }
   }
 
-  formatAt(index, length, name, value) {
+  formatAt (index, length, name, value) {
     super.formatAt(index, length, name, value)
   }
 
-  optimize(context) {
-    super.optimize(context);
-    //console.log('opt on ' + this.domNode.innerHTML);
+  optimize (context) {
+    super.optimize(context)
+    // console.log('opt on ' + this.domNode.innerHTML);
     if (this.prev) {
       if (this.prev.statics.blotName == this.statics.blotName) {
         if (this.prev.domNode.getAttribute('id') == this.domNode.getAttribute('id')) {
-          //console.log('move:');
-           // console.log('prev: ' + this.prev.domNode.innerHTML);
+          // console.log('move:');
+          // console.log('prev: ' + this.prev.domNode.innerHTML);
           this.moveChildren(this.prev)
         }
       }
     }
-    //console.log('done opt on ' + this.domNode.innerHTML);
+    // console.log('done opt on ' + this.domNode.innerHTML);
   }
 }
-ConnectiveBlot.tagName = 'span';
+ConnectiveBlot.tagName = 'span'
 
 class ConnectiveBlot1 extends ConnectiveBlot {}
-ConnectiveBlot1.blotName = 'connective-1';
-ConnectiveBlot1.className = 'connective-depth-1';
+ConnectiveBlot1.blotName = 'connective-1'
+ConnectiveBlot1.className = 'connective-depth-1'
 class ConnectiveBlot2 extends ConnectiveBlot {}
-ConnectiveBlot2.blotName = 'connective-2';
-ConnectiveBlot2.className = 'connective-depth-2';
-ConnectiveBlot2.requiredContainer = ConnectiveBlot1;
+ConnectiveBlot2.blotName = 'connective-2'
+ConnectiveBlot2.className = 'connective-depth-2'
+ConnectiveBlot2.requiredContainer = ConnectiveBlot1
 class ConnectiveBlot3 extends ConnectiveBlot {}
-ConnectiveBlot3.blotName = 'connective-3';
-ConnectiveBlot3.className = 'connective-depth-3';
-ConnectiveBlot3.requiredContainer = ConnectiveBlot2;
+ConnectiveBlot3.blotName = 'connective-3'
+ConnectiveBlot3.className = 'connective-depth-3'
+ConnectiveBlot3.requiredContainer = ConnectiveBlot2
 class ConnectiveBlot4 extends ConnectiveBlot {}
-ConnectiveBlot4.blotName = 'connective-4';
-ConnectiveBlot4.className = 'connective-depth-4';
-ConnectiveBlot4.requiredContainer = ConnectiveBlot3;
+ConnectiveBlot4.blotName = 'connective-4'
+ConnectiveBlot4.className = 'connective-depth-4'
+ConnectiveBlot4.requiredContainer = ConnectiveBlot3
 class ConnectiveBlot5 extends ConnectiveBlot {}
-ConnectiveBlot5.blotName = 'connective-5';
-ConnectiveBlot5.className = 'connective-depth-5';
-ConnectiveBlot5.requiredContainer = ConnectiveBlot4;
+ConnectiveBlot5.blotName = 'connective-5'
+ConnectiveBlot5.className = 'connective-depth-5'
+ConnectiveBlot5.requiredContainer = ConnectiveBlot4
 class ConnectiveBlot6 extends ConnectiveBlot {}
-ConnectiveBlot6.blotName = 'connective-6';
-ConnectiveBlot6.className = 'connective-depth-6';
-ConnectiveBlot6.requiredContainer = ConnectiveBlot5;
+ConnectiveBlot6.blotName = 'connective-6'
+ConnectiveBlot6.className = 'connective-depth-6'
+ConnectiveBlot6.requiredContainer = ConnectiveBlot5
 class ConnectiveBlot7 extends ConnectiveBlot {}
-ConnectiveBlot7.blotName = 'connective-7';
-ConnectiveBlot7.className = 'connective-depth-7';
-ConnectiveBlot7.requiredContainer = ConnectiveBlot6;
+ConnectiveBlot7.blotName = 'connective-7'
+ConnectiveBlot7.className = 'connective-depth-7'
+ConnectiveBlot7.requiredContainer = ConnectiveBlot6
 class ConnectiveBlot8 extends ConnectiveBlot {}
-ConnectiveBlot8.blotName = 'connective-8';
-ConnectiveBlot8.className = 'connective-depth-8';
-ConnectiveBlot8.requiredContainer = ConnectiveBlot7;
+ConnectiveBlot8.blotName = 'connective-8'
+ConnectiveBlot8.className = 'connective-depth-8'
+ConnectiveBlot8.requiredContainer = ConnectiveBlot7
 class ConnectiveBlot9 extends ConnectiveBlot {}
-ConnectiveBlot9.blotName = 'connective-9';
-ConnectiveBlot9.className = 'connective-depth-9';
-ConnectiveBlot9.requiredContainer = ConnectiveBlot8;
+ConnectiveBlot9.blotName = 'connective-9'
+ConnectiveBlot9.className = 'connective-depth-9'
+ConnectiveBlot9.requiredContainer = ConnectiveBlot8
 class ConnectiveBlot10 extends ConnectiveBlot {}
-ConnectiveBlot10.blotName = 'connective-10';
-ConnectiveBlot10.className = 'connective-depth-10';
-ConnectiveBlot10.requiredContainer = ConnectiveBlot9;
+ConnectiveBlot10.blotName = 'connective-10'
+ConnectiveBlot10.className = 'connective-depth-10'
+ConnectiveBlot10.requiredContainer = ConnectiveBlot9
 /*
 class ConnectiveBlot2 extends Inline {
   static create(data) {
@@ -623,7 +624,6 @@ class ConnectiveBlot2 extends Inline {
   formatAt(index, length, name, value) {
     super.formatAt(index, length, name, value)
   }
-
 
   optimize(context) {
     super.optimize(context);
@@ -646,55 +646,53 @@ ConnectiveBlot2.className = 'connective-depth-2';
 ConnectiveBlot2.requiredContainer = ConnectiveBlot1;
 */
 class TermBlot extends Inline {
-  static create(data) {
-    let node = super.create();
-    node.setAttribute('id', data.id);
-    node.setAttribute('data-term', data.term);
-    node.addEventListener('mouseover', function(e) {nai.highlightTerm(data.term);});
-    node.addEventListener('mouseout', function(e) {nai.unhighlightTerm(data.term);});
-    node.setAttribute('title', data.term);
-    return node;
+  static create (data) {
+    let node = super.create()
+    node.setAttribute('id', data.id)
+    node.setAttribute('data-term', data.term)
+    node.addEventListener('mouseover', function (e) { nai.highlightTerm(data.term) })
+    node.addEventListener('mouseout', function (e) { nai.unhighlightTerm(data.term) })
+    node.setAttribute('title', data.term)
+    return node
   }
 
-  static formats(node) {
-    return {id: node.getAttribute('id'),
-            term: node.getAttribute('data-term')};
+  static formats (node) {
+    return { id: node.getAttribute('id'),
+      term: node.getAttribute('data-term') }
   }
 }
-TermBlot.blotName = 'term';
-TermBlot.tagName = 'span';
-TermBlot.className = 'annotator-term';
-
+TermBlot.blotName = 'term'
+TermBlot.tagName = 'span'
+TermBlot.className = 'annotator-term'
 
 class GoalBlot extends Inline {
-  static create(id) {
-    let node = super.create();
-    node.setAttribute('id', id);
-    node.setAttribute('title', 'Goal');
-    return node;
+  static create (id) {
+    let node = super.create()
+    node.setAttribute('id', id)
+    node.setAttribute('title', 'Goal')
+    return node
   }
 
-  static formats(node) {
-    return node.getAttribute('id');
+  static formats (node) {
+    return node.getAttribute('id')
   }
 }
-GoalBlot.blotName = 'goal';
-GoalBlot.tagName = 'span';
-GoalBlot.className = 'annotator-goal';
+GoalBlot.blotName = 'goal'
+GoalBlot.tagName = 'span'
+GoalBlot.className = 'annotator-goal'
 
-
-Inline.order.push('term');
-Inline.order.push('connective-10');
-Inline.order.push('connective-9');
-Inline.order.push('connective-8');
-Inline.order.push('connective-7');
-Inline.order.push('connective-6');
-Inline.order.push('connective-5');
-Inline.order.push('connective-4');
-Inline.order.push('connective-3');
-Inline.order.push('connective-2');
-Inline.order.push('connective-1'); // See https://stackoverflow.com/questions/43267123/quilljs-parchment-controlling-nesting-order
-Inline.order.push('goal');
+Inline.order.push('term')
+Inline.order.push('connective-10')
+Inline.order.push('connective-9')
+Inline.order.push('connective-8')
+Inline.order.push('connective-7')
+Inline.order.push('connective-6')
+Inline.order.push('connective-5')
+Inline.order.push('connective-4')
+Inline.order.push('connective-3')
+Inline.order.push('connective-2')
+Inline.order.push('connective-1') // See https://stackoverflow.com/questions/43267123/quilljs-parchment-controlling-nesting-order
+Inline.order.push('goal')
 
 Quill.register(GoalBlot)
 Quill.register(TermBlot)
@@ -709,135 +707,135 @@ Quill.register(ConnectiveBlot8)
 Quill.register(ConnectiveBlot9)
 Quill.register(ConnectiveBlot10)
 
-
 Vue.component('quill', {
-  data: function() {
+  data: function () {
     return {
       quill: null,
       content0: '',
       options: {
-        theme: "snow",
+        theme: 'snow',
         modules: {
           history: {
             delay: 1000,
             userOnly: false
           },
           toolbar: {
-           container: '#quilltoolbar',
-           handlers: {
-             'undo': function() {
-               this.quill.history.undo();
-             },
-             'redo': function() {
-               this.quill.history.redo();
-             }
-           }
-         }
-         }
-       },
-      termPrompt: false, termPromptData: null,
+            container: '#quilltoolbar',
+            handlers: {
+              'undo': function () {
+                this.quill.history.undo()
+              },
+              'redo': function () {
+                this.quill.history.redo()
+              }
+            }
+          }
+        }
+      },
+      termPrompt: false,
+      termPromptData: null
     }
   },
-  props: ['value','maxheight', 'terms', 'connectives','allowTermCreation', 'goal'],
+  props: ['value', 'maxheight', 'terms', 'connectives', 'allowTermCreation', 'goal'],
   methods: {
-    annotateTerm: function() {
+    annotateTerm: function () {
       var range = this.quill.getSelection()
-      if (!!range) {
+      if (range) {
         if (range.length > 0) {
-          var text = this.quill.getText(range.index, range.length);
-          var bounds = this.quill.getBounds(range.index, range.length);
-          this.termPromptData = {original: text, terms: this.terms, range: range, bounds: bounds};
-          this.termPrompt = true;
+          var text = this.quill.getText(range.index, range.length)
+          var bounds = this.quill.getBounds(range.index, range.length)
+          this.termPromptData = { original: text, terms: this.terms, range: range, bounds: bounds }
+          this.termPrompt = true
         }
       }
     },
-    doneAnnotateTerm: function(origin, info) {
-      this.hideTermPrompt();
-      let data = {id: this.generateUUID(), term: info.term};
-      let depth = this.getConnectiveDepth(origin.range);
+    doneAnnotateTerm: function (origin, info) {
+      this.hideTermPrompt()
+      let data = { id: this.generateUUID(), term: info.term }
+      let depth = this.getConnectiveDepth(origin.range)
       this.quill.formatText(origin.range.index, origin.range.length, 'term', data)
-      this.$parent.$emit('theory-annotate', origin, info, depth);
+      this.$parent.$emit('theory-annotate', origin, info, depth)
     },
-    hideTermPrompt: function() {
-      this.termPrompt = false;
-      this.termPromptData = null;
+    hideTermPrompt: function () {
+      this.termPrompt = false
+      this.termPromptData = null
     },
-    annotateConnective: function(conn) {
+    annotateConnective: function (conn) {
       var range = this.quill.getSelection()
-      if (!!range) {
+      if (range) {
         if (range.length > 0) {
-          let data = {id: this.generateUUID(), connective: conn};
-          let depth = this.getConnectiveDepth(range);
-          let format = 'connective-' + depth;
+          let data = { id: this.generateUUID(), connective: conn }
+          let depth = this.getConnectiveDepth(range)
+          let format = 'connective-' + depth
           this.quill.formatText(range.index, range.length, format, data)
           if (depth == 1) {
-            let text = this.quill.getText(range.index, range.length);
-            this.$parent.$emit('theory-annotate', {original: text, range: range}, {term: null}, depth);
+            let text = this.quill.getText(range.index, range.length)
+            this.$parent.$emit('theory-annotate', { original: text, range: range }, { term: null }, depth)
           }
         }
       }
     },
-    annotateGoal: function() {
+    annotateGoal: function () {
       var range = this.quill.getSelection()
-      if (!!range) {
+      if (range) {
         if (range.length > 0) {
-          let id = this.generateUUID();
+          let id = this.generateUUID()
           let format = 'goal'
           this.quill.formatText(range.index, range.length, format, id)
-          console.log('done goal:' + range.index + " " + range.length)
+          console.log('done goal:' + range.index + ' ' + range.length)
         }
       }
     },
-    removeAnnotations: function() {
+    removeAnnotations: function () {
       var range = this.quill.getSelection()
-      if (!!range) {
+      if (range) {
         if (range.length > 0) {
-          this.quill.removeFormat(range.index, range.length);
+          this.quill.removeFormat(range.index, range.length)
         }
       }
     },
-    showConnectiveDropdown: function() {
+    showConnectiveDropdown: function () {
       this.$refs.editorConnectiveDropdown.style.display = 'block'
     },
-    hideConnectiveDropdown: function() {
+    hideConnectiveDropdown: function () {
       this.$refs.editorConnectiveDropdown.style.display = 'none'
     },
-    generateUUID: function() {
-      var d = new Date().getTime();
-      var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-          var r = (d + Math.random()*16)%16 | 0;
-          d = Math.floor(d/16);
-          return (c=='x' ? r : (r&0x3|0x8)).toString(16);
-      });
-      return uuid;
+    generateUUID: function () {
+      var d = new Date().getTime()
+      var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = (d + Math.random() * 16) % 16 | 0
+        d = Math.floor(d / 16)
+        return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16)
+      })
+      return uuid
     },
-    getConnectiveDepth: function(range) {
-      if (!!range) {
-        let format = this.quill.getFormat(range.index, range.length);
-        if (format['connective-10']) return undefined;
-        if (format['connective-9']) return 10;
-        if (format['connective-8']) return 9;
-        if (format['connective-7']) return 8;
-        if (format['connective-6']) return 7;
-        if (format['connective-5']) return 6;
-        if (format['connective-4']) return 5;
-        if (format['connective-3']) return 4;
-        if (format['connective-2']) return 3;
-        if (format['connective-1']) return 2;
-        return 1;
+    getConnectiveDepth: function (range) {
+      if (range) {
+        let format = this.quill.getFormat(range.index, range.length)
+        if (format['connective-10']) return undefined
+        if (format['connective-9']) return 10
+        if (format['connective-8']) return 9
+        if (format['connective-7']) return 8
+        if (format['connective-6']) return 7
+        if (format['connective-5']) return 6
+        if (format['connective-4']) return 5
+        if (format['connective-3']) return 4
+        if (format['connective-2']) return 3
+        if (format['connective-1']) return 2
+        return 1
       } else undefined
     }
   },
   computed: {
-    get: function() { return this.quill }, // Quill API port by passing quill object to the outside
-    styleObject: function() {
-      if (!!this.maxheight) {
-        return { maxHeight: this.maxheight, overflowY: "auto" }
+    get: function () { return this.quill }, // Quill API port by passing quill object to the outside
+    styleObject: function () {
+      if (this.maxheight) {
+        return { maxHeight: this.maxheight, overflowY: 'auto' }
       } else {
-        return { height: "290px"}
+        return { height: '290px' }
       }
     },
-    /*connectives: function() {
+    /* connectives: function() {
       return [
         {name: 'neg', description: 'Negation', symbol: '~', arity: 1},
         {name: 'perm', description: 'Permission', symbol: 'Pm', arity: 1},
@@ -850,32 +848,32 @@ Vue.component('quill', {
         {name: 'impl', description: 'Implication', symbol: 'Implies', arity: 2},
         {name: 'iff', description: 'Equivalence', symbol: 'Iff', arity: 2}
       ];
-    },*/
-    annotateButtonsDisabled: function() {
-      if (!!this.quill) {
+    }, */
+    annotateButtonsDisabled: function () {
+      if (this.quill) {
         var range = this.quill.getSelection()
-        if (!!range) {
-          return !(range.length > 0);
-        } else return true;
+        if (range) {
+          return !(range.length > 0)
+        } else return true
       }
     },
-    allowTermCreation0: function() {
+    allowTermCreation0: function () {
       if (_.isNil(this.allowTermCreation)) {
-        return true;
+        return true
       } else {
-        return this.allowTermCreation;
+        return this.allowTermCreation
       }
     },
-    goal0: function() {
+    goal0: function () {
       if (_.isNil(this.goal)) {
-        return false;
+        return false
       } else {
-        return this.goal;
+        return this.goal
       }
     }
   },
-  mounted: function() {
-    var self = this;
+  mounted: function () {
+    var self = this
     this.quill = new Quill(this.$refs.editor, this.options)
     quill = this.quill
     this.quill.enable(false)
@@ -883,16 +881,16 @@ Vue.component('quill', {
     this.quill.enable(true)
 
     this.quill.on('text-change', (delta, oldDelta, source) => {
-            let html = this.$refs.editor.children[0].innerHTML
-            const quill = this.quill
-            const text = this.quill.getText()
-            if (html === '<p><br></p>') html = ''
-            this.content0 = html
-            this.$emit('input', this.content0)
-          })
+      let html = this.$refs.editor.children[0].innerHTML
+      const quill = this.quill
+      const text = this.quill.getText()
+      if (html === '<p><br></p>') html = ''
+      this.content0 = html
+      this.$emit('input', this.content0)
+    })
     // Disable text editing in annotated text parts. This would only cause trouble.
     // We don't like trouble.
-    /*this.quill.on('selection-change', function(range, oldRange, source) {
+    /* this.quill.on('selection-change', function(range, oldRange, source) {
       if (!!range) {
         //self.$refs.connectivedebug.innerHTML = 'connective depth:'+ self.getConnectiveDepth(range);
         if (range.length > 0) {
@@ -907,14 +905,14 @@ Vue.component('quill', {
           else { self.quill.enable(); self.quill.focus() }
         }
       }
-    });*/
+    }); */
   },
-  beforeDestroy: function() {
+  beforeDestroy: function () {
     this.quill = null
     delete this.quill
   },
   watch: {
-    value(newVal,oldVal) {
+    value (newVal, oldVal) {
       if (newVal && newVal !== this.content0) {
         this.content0 = newVal
         this.quill.pasteHTML(newVal)
@@ -1000,44 +998,44 @@ Vue.component('quill', {
 })
 
 Vue.component('quill-term-prompt', {
-  props: ['data','allowTermCreation'],
-  data: function() {
+  props: ['data', 'allowTermCreation'],
+  data: function () {
     return {
       selectedTerm: '',
       newTerm: '',
       checked: '' // Default name checkbox.
-      }
+    }
   },
   methods: {
-    confirm: function() {
-      let info = {};
-      if (!!this.newTerm) {
-          info.term = this.newTerm;
-          info.fresh = true;
-        } else {
-          info.term = this.selectedTerm;
-          info.fresh = false;
-        }
+    confirm: function () {
+      let info = {}
+      if (this.newTerm) {
+        info.term = this.newTerm
+        info.fresh = true
+      } else {
+        info.term = this.selectedTerm
+        info.fresh = false
+      }
       this.$emit('annotate-confirm', this.data, info)
     },
-    cancel: function() {
+    cancel: function () {
       this.$emit('annotate-cancel')
     },
-    updateDefaultName: function() { // Called on checkbox change.
-      if(this.checked) {
-        let highlightedTextArr = this.data.original.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()@\+\?><\[\]\+]/g, '').trim().split(' ').slice(0,3);
-        this.newTerm = highlightedTextArr.join('_');
+    updateDefaultName: function () { // Called on checkbox change.
+      if (this.checked) {
+        let highlightedTextArr = this.data.original.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()@\+\?><\[\]\+]/g, '').trim().split(' ').slice(0, 3)
+        this.newTerm = highlightedTextArr.join('_')
       } else {
-        this.newTerm = '';
+        this.newTerm = ''
       }
     }
   },
   computed: {
-    termSelectDisabled: function() {
-      return this.newTerm != '';
+    termSelectDisabled: function () {
+      return this.newTerm != ''
     },
-    checkboxDisabled: function() {
-      return this.termSelectDisabled && !this.checked;
+    checkboxDisabled: function () {
+      return this.termSelectDisabled && !this.checked
     }
   },
   template: `
@@ -1093,13 +1091,13 @@ Vue.component('quill-term-prompt', {
       </div>
     </div>
   `
-});
+})
 
-///////////////////////////
+/// ////////////////////////
 // Sidepanel/Notes Component
-///////////////////////////
+/// ////////////////////////
 Vue.component('SidePanelComponent', {
-  data: function() {
+  data: function () {
     return {
       splitInstance: null,
       splitSizes: [80, 20],
@@ -1109,24 +1107,24 @@ Vue.component('SidePanelComponent', {
       }
     }
   },
-  mounted: function() {
-    this.quill = new Quill('#editor', this.options);
+  mounted: function () {
+    this.quill = new Quill('#editor', this.options)
   },
-  activated: function() {
+  activated: function () {
     /* The instance of split.js is created on activation, destroyed on deactivation.
      The size of each panel is saved in data. */
-    let self = this;
+    let self = this
     this.splitInstance = Split(['.split-left', '.split-right'], {
-        gutterSize: 5,
-        sizes: self.splitSizes,
-        onDragEnd: function(sizes) {
-          self.splitSizes = sizes;
-        }
-    });
+      gutterSize: 5,
+      sizes: self.splitSizes,
+      onDragEnd: function (sizes) {
+        self.splitSizes = sizes
+      }
+    })
   },
-  deactivated: function() {
-    this.splitInstance.destroy(preserveStyles = false, preserveGutters = false);
-    this.splitInstance = null;
+  deactivated: function () {
+    this.splitInstance.destroy(preserveStyles = false, preserveGutters = false)
+    this.splitInstance = null
   },
   template: `
     <div class="d-flex split-right container-fluid justify-content-center align-content-center card bg-light">

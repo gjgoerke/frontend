@@ -1,29 +1,29 @@
 const query = {
-  data: function() {
+  data: function () {
     return {
       query: null,
       lastSavedQuery: null,
       theories: null,
-      //chosenTheory: null,
+      // chosenTheory: null,
       loadedQuery: false,
-      loadedTheories: false,    
+      loadedTheories: false,
 
       editTitle: false,
       editAssumptions: false,
       editGoal: false,
 
       saving: false,
-      saveResponse: {show: false, type: '', message: '', timeout: 0},
+      saveResponse: { show: false, type: '', message: '', timeout: 0 },
 
       execRunning: false,
-      execResponse: {show: false, type: '', message: '', timeout: 0},
+      execResponse: { show: false, type: '', message: '', timeout: 0 },
 
       consistencyCheckRunning: false,
-      consistencyResponse: {show: false, type: '', message: '', timeout: 0},
-      
-      annotationColors: ['#5C97BF','#00AA55','#F64747','#B381B3','#1BA39C','#FF00FF',
-                         '#D252B2','#D46A43','#00A4A6','#D4533B','#939393','#AA8F00',
-                         '#D47500','#E26A6A','#009FD4','#5D995D'],
+      consistencyResponse: { show: false, type: '', message: '', timeout: 0 },
+
+      annotationColors: ['#5C97BF', '#00AA55', '#F64747', '#B381B3', '#1BA39C', '#FF00FF',
+        '#D252B2', '#D46A43', '#00A4A6', '#D4533B', '#939393', '#AA8F00',
+        '#D47500', '#E26A6A', '#009FD4', '#5D995D'],
       lastAnnotationColor: -1,
       connectives: null,
       activeTab: 0
@@ -31,25 +31,25 @@ const query = {
   },
   methods: {
     /* general stuff */
-    back: function() {
+    back: function () {
       if (!_.isEqual(this.query, this.lastSavedQuery)) {
-        nai.log("Query was changed", "[Query]")
-        var response = window.confirm("You have unsaved changed. Are you sure you want to leave this page?")
+        nai.log('Query was changed', '[Query]')
+        var response = window.confirm('You have unsaved changed. Are you sure you want to leave this page?')
         if (response) {
-         window.removeEventListener("beforeunload", unloadHandler);
-         nai.log("Event listener removed", "[Query]");
-         router.push('/dashboard')
+          window.removeEventListener('beforeunload', unloadHandler)
+          nai.log('Event listener removed', '[Query]')
+          router.push('/dashboard')
         }
       } else {
-        nai.log("Query unchanged", "[Query]")
-        window.removeEventListener("beforeunload", unloadHandler);
-        nai.log("Event listener removed", "[Query]");
+        nai.log('Query unchanged', '[Query]')
+        window.removeEventListener('beforeunload', unloadHandler)
+        nai.log('Event listener removed', '[Query]')
         router.push('/dashboard')
       }
     },
-    saveQuery: function(onSuccess, onError) {
-      var self = this;
-      let updatedTheory = (!!this.query.theory) ? this.query.theory : undefined;
+    saveQuery: function (onSuccess, onError) {
+      var self = this
+      let updatedTheory = (this.query.theory) ? this.query.theory : undefined
       var updatedQuery = {
         _id: this.queryId,
         name: this.queryName,
@@ -59,237 +59,237 @@ const query = {
         assumptions: this.queryAssumptions
       }
       // Show save-in-progress icon
-      this.saving = true;
+      this.saving = true
       // Call API
-      nai.saveQuery(updatedQuery, function(resp) {
-        self.saveResponse = {show: true, type: 'success', message: 'Query successfully saved', timeout: 3000};
-        nai.getQuery(self.queryId, function(resp) {
-          nai.log('Save-get retrieved', '[Query]');
-          self.query = resp.data.data;
-          self.saving = false;
+      nai.saveQuery(updatedQuery, function (resp) {
+        self.saveResponse = { show: true, type: 'success', message: 'Query successfully saved', timeout: 3000 }
+        nai.getQuery(self.queryId, function (resp) {
+          nai.log('Save-get retrieved', '[Query]')
+          self.query = resp.data.data
+          self.saving = false
           self.lastSavedQuery = _.cloneDeep(self.query)
           nai.log('Update successful, response: ', '[Query]')
-        }, function(error) {
-          nai.log('save-get error', '[Query]'); // not too bad, just ignore
-          self.saving = false;
+        }, function (error) {
+          nai.log('save-get error', '[Query]') // not too bad, just ignore
+          self.saving = false
           self.lastSavedQuery = _.cloneDeep(self.query)
           nai.log('Update successful, response: ', '[Query]')
-        });
+        })
         if (!!onSuccess && onSuccess) { onSuccess() }
-      }, function(error) {
-        self.saveResponse = {show: true, type: 'warning', message: 'Query not saved, an error occurred: ' + error.response.data.error};
-        self.saving = false;
+      }, function (error) {
+        self.saveResponse = { show: true, type: 'warning', message: 'Query not saved, an error occurred: ' + error.response.data.error }
+        self.saving = false
         nai.log('Update error, response: ', '[Query]')
         nai.log(error, '[Query]')
         if (!!onError && onError) { onError() }
-      });
+      })
       // Disable all editing
       this.finishedEditTitle()
       this.finishedEditAssumptions()
       this.finishedEditGoal()
     },
     /* title/description stuff */
-    doEditTitle: function() {
-      this.editTitle = true;
+    doEditTitle: function () {
+      this.editTitle = true
     },
-    finishedEditTitle: function() {
-      this.editTitle = false;
+    finishedEditTitle: function () {
+      this.editTitle = false
     },
-    toggleEditTitle: function() {
-      (this.editTitle) ? this.finishedEditTitle() : this.doEditTitle();
+    toggleEditTitle: function () {
+      (this.editTitle) ? this.finishedEditTitle() : this.doEditTitle()
     },
     /* assumptions stuff */
-    addLineToAssumptions: function() {
-      this.queryAssumptions.push('');
-      this.doEditAssumptions();
+    addLineToAssumptions: function () {
+      this.queryAssumptions.push('')
+      this.doEditAssumptions()
     },
-    doEditAssumptions: function() {
-      this.editAssumptions = true;
+    doEditAssumptions: function () {
+      this.editAssumptions = true
     },
-    finishedEditAssumptions: function() {
-      this.editAssumptions = false;
+    finishedEditAssumptions: function () {
+      this.editAssumptions = false
     },
-    toggleEditAssumptions: function() {
-      (this.editAssumptions) ? this.finishedEditAssumptions() : this.doEditAssumptions();
+    toggleEditAssumptions: function () {
+      (this.editAssumptions) ? this.finishedEditAssumptions() : this.doEditAssumptions()
     },
-    assumptionsDelButtonClick: function(index) {
-      this.queryAssumptions.splice(index,1)
+    assumptionsDelButtonClick: function (index) {
+      this.queryAssumptions.splice(index, 1)
     },
     /* goal stuff */
-    doEditGoal: function() {
-      this.editGoal = true;
+    doEditGoal: function () {
+      this.editGoal = true
     },
-    finishedEditGoal: function() {
-      this.editGoal = false;
+    finishedEditGoal: function () {
+      this.editGoal = false
     },
-    toggleEditGoal: function() {
-      (this.editGoal) ? this.finishedEditGoal() : this.doEditGoal();
+    toggleEditGoal: function () {
+      (this.editGoal) ? this.finishedEditGoal() : this.doEditGoal()
     },
-    runQuery: function() {
-      var self = this;
-      if (!!this.query.theory) {
-        self.execResponse = {show: false, type: '', message: '', timeout: 0};
+    runQuery: function () {
+      var self = this
+      if (this.query.theory) {
+        self.execResponse = { show: false, type: '', message: '', timeout: 0 }
         if (!_.isEqual(this.query, this.lastSavedQuery)) {
-          this.saveQuery(function() {
-            self.runQuery0();
+          this.saveQuery(function () {
+            self.runQuery0()
           },
-          function() {
-            var msg = 'Query cannot be executed because there was an error during saving.';
-            self.execResponse = {show: true, type: 'warning', message: msg};
-          });
+          function () {
+            var msg = 'Query cannot be executed because there was an error during saving.'
+            self.execResponse = { show: true, type: 'warning', message: msg }
+          })
         } else {
-          this.runQuery0();
+          this.runQuery0()
         }
       } else {
-        nai.log('Legislation not chosen, query not possible', '[Query]');
-        self.execResponse = {show: true, type: 'warning', message: 'Cannot execute query, please select legislation first.', timeout: 3000};
+        nai.log('Legislation not chosen, query not possible', '[Query]')
+        self.execResponse = { show: true, type: 'warning', message: 'Cannot execute query, please select legislation first.', timeout: 3000 }
       }
     },
-    runQuery0: function() {
-      var self = this;
-      this.execRunning = true;
-        nai.runQuery(this.queryId, function(resp) {
-          if (!!resp.data) {
-          let data = resp.data;
-          let timeout = undefined;
+    runQuery0: function () {
+      var self = this
+      this.execRunning = true
+      nai.runQuery(this.queryId, function (resp) {
+        if (resp.data) {
+          let data = resp.data
+          let timeout
           if (data.type == 'success') { timeout = 3000 }
-          self.execResponse = {show: true, type: data.type, message: data.message, timeout: timeout};  
+          self.execResponse = { show: true, type: data.type, message: data.message, timeout: timeout }
         } else {
-          self.execResponse = {show: true, type: 'warning', message: '<b>Unexpected reponse</b>: ' + resp};
+          self.execResponse = { show: true, type: 'warning', message: '<b>Unexpected reponse</b>: ' + resp }
         }
         self.execRunning = false
-        }, function(error) {
-          if (!!error.response.data) {
+      }, function (error) {
+        if (error.response.data) {
           let msg = error.response.data.error
-          self.consistencyResponse = {show: true, type: 'danger', message: msg.replace(/\n/g,'<br>')};  
+          self.consistencyResponse = { show: true, type: 'danger', message: msg.replace(/\n/g, '<br>') }
         } else {
-          self.execResponse = {show: true, type: 'warning', message: '<b>Unexpected reponse</b>: ' + resp};
+          self.execResponse = { show: true, type: 'warning', message: '<b>Unexpected reponse</b>: ' + resp }
         }
         self.execRunning = false
-        });
+      })
     },
-    runConsistencyCheck: function() {
-      var self = this;
-      this.consistencyCheckRunning = true;
-      nai.checkQueryConsistency(this.queryId, function(resp) {
-        if (!!resp.data) {
-          let data = resp.data;
-          let timeout = undefined;
+    runConsistencyCheck: function () {
+      var self = this
+      this.consistencyCheckRunning = true
+      nai.checkQueryConsistency(this.queryId, function (resp) {
+        if (resp.data) {
+          let data = resp.data
+          let timeout
           if (data.type == 'success') { timeout = 3000 }
-          self.consistencyResponse = {show: true, type: data.type, message: data.message, timeout: timeout};  
+          self.consistencyResponse = { show: true, type: data.type, message: data.message, timeout: timeout }
         } else {
-          self.consistencyResponse = {show: true, type: 'warning', message: '<b>Unexpected reponse</b>: ' + resp};
+          self.consistencyResponse = { show: true, type: 'warning', message: '<b>Unexpected reponse</b>: ' + resp }
         }
         self.consistencyCheckRunning = false
-      }, function(error) {
-        if (!!error.response.data) {
+      }, function (error) {
+        if (error.response.data) {
           let msg = error.response.data.error
-          self.consistencyResponse = {show: true, type: 'danger', message: msg.replace(/\n/g,'<br>')};  
+          self.consistencyResponse = { show: true, type: 'danger', message: msg.replace(/\n/g, '<br>') }
         } else {
-          self.consistencyResponse = {show: true, type: 'warning', message: '<b>Unexpected reponse</b>: ' + resp};
+          self.consistencyResponse = { show: true, type: 'warning', message: '<b>Unexpected reponse</b>: ' + resp }
         }
         self.consistencyCheckRunning = false
       })
     },
-    onAnnotate: function(origin, info, depth) {
-      let original = origin.original;
-      if (!!info.term) {
+    onAnnotate: function (origin, info, depth) {
+      let original = origin.original
+      if (info.term) {
         // term annotation
-        let term = info.term;
-        
-        let idx = _.findIndex(this.queryAutoVocabulary.concat(this.theoryVoc), function(voc) {
-            return (voc.full == term);
-         });
+        let term = info.term
+
+        let idx = _.findIndex(this.queryAutoVocabulary.concat(this.theoryVoc), function (voc) {
+          return (voc.full == term)
+        })
         if (idx < 0) {
-          this.insertTermStyle(term);
-          this.queryAutoVocabulary.push({original: original, full: term});
-        } 
+          this.insertTermStyle(term)
+          this.queryAutoVocabulary.push({ original: original, full: term })
+        }
         if (depth == 1) {
           // Also add as formula
-          this.queryAutoAssumptions.push({original: original, formula: term})
+          this.queryAutoAssumptions.push({ original: original, formula: term })
         }
       } else {
         // connective annotation
-        //if (depth != 1) return;
-        //this.theoryAutoFormalization.push({original: original, formula: ''})
+        // if (depth != 1) return;
+        // this.theoryAutoFormalization.push({original: original, formula: ''})
       }
     },
-    insertTermStyle: function(term) {
-      let color = this.nextAnnotationColor();
-      this.auxStyles.insertRule('.annotator-term[data-term="'+ term +'"] { background-color: ' + color + '; }');
+    insertTermStyle: function (term) {
+      let color = this.nextAnnotationColor()
+      this.auxStyles.insertRule('.annotator-term[data-term="' + term + '"] { background-color: ' + color + '; }')
     },
-    nextAnnotationColor: function() {
-      this.lastAnnotationColor = (this.lastAnnotationColor + 1) % this.annotationColors.length;
-      return this.annotationColors[this.lastAnnotationColor];
+    nextAnnotationColor: function () {
+      this.lastAnnotationColor = (this.lastAnnotationColor + 1) % this.annotationColors.length
+      return this.annotationColors[this.lastAnnotationColor]
     }
   },
   computed: {
-    loaded: function() {
-      return this.loadedQuery && this.loadedTheories;
+    loaded: function () {
+      return this.loadedQuery && this.loadedTheories
     },
-    queryName: function() {
+    queryName: function () {
       return this.query.name
     },
-    queryId: function() {
+    queryId: function () {
       return this.query._id
     },
-    queryTheoryId: function() {
-      return this.query.theory._id;
+    queryTheoryId: function () {
+      return this.query.theory._id
     },
-    queryLastUpdate: function() {
-      return new Date(this.query.lastUpdate);
+    queryLastUpdate: function () {
+      return new Date(this.query.lastUpdate)
     },
-    queryDesc: function() {
+    queryDesc: function () {
       return this.query.description
     },
-    queryContent: function() {
+    queryContent: function () {
       return this.query.content
     },
-    queryAutoVocabulary: function() {
-      return this.query.autoVocabulary;
+    queryAutoVocabulary: function () {
+      return this.query.autoVocabulary
     },
-    queryEffectiveQueryVoc: function() {
-      let qvoc = this.query.autoVocabulary;
-      if (!!this.query.theory.autoVocabulary) {
-        let tvoc = this.query.theory.autoVocabulary;
-        return _.differenceBy(qvoc,tvoc, 'full')
+    queryEffectiveQueryVoc: function () {
+      let qvoc = this.query.autoVocabulary
+      if (this.query.theory.autoVocabulary) {
+        let tvoc = this.query.theory.autoVocabulary
+        return _.differenceBy(qvoc, tvoc, 'full')
       } else {
         return qvoc
       }
     },
-    queryAutoAssumptions: function() {
+    queryAutoAssumptions: function () {
       return this.query.autoAssumptions
     },
-    queryAssumptions: function() {
+    queryAssumptions: function () {
       return this.query.assumptions
     },
-    queryAutoGoal: function() {
+    queryAutoGoal: function () {
       return this.query.autoGoal
     },
-    queryGoal: function() {
+    queryGoal: function () {
       return this.query.goal
     },
-    theoryVoc: function() {
-      if (!!this.query.theory.autoVocabulary) {
+    theoryVoc: function () {
+      if (this.query.theory.autoVocabulary) {
         return this.query.theory.autoVocabulary.concat(this.query.theory.vocabulary)
-      } else return [];
+      } else return []
     },
-    assumptionsDelButtonTitle: function() {
+    assumptionsDelButtonTitle: function () {
       if (this.editAssumptions) {
-        return "Delete entry"
+        return 'Delete entry'
       } else {
-        return "Enable edit mode for deleting"
+        return 'Enable edit mode for deleting'
       }
     },
-    assumptionsDelButtonStyle: function() {
+    assumptionsDelButtonStyle: function () {
       if (this.editAssumptions) {
-        return ""
+        return ''
       } else {
-        return "cursor: not-allowed"
+        return 'cursor: not-allowed'
       }
     },
-    auxStyles: function() { 
-      return document.getElementById('additionalStyles').sheet;
+    auxStyles: function () {
+      return document.getElementById('additionalStyles').sheet
     }
   },
   template: `
@@ -582,66 +582,65 @@ const query = {
       </div>
     </div>
   `,
-  mounted: function() {    
-    this.$on('theory-annotate', this.onAnnotate);
+  mounted: function () {
+    this.$on('theory-annotate', this.onAnnotate)
   },
   created: function () {
     nai.log('Created', '[Query]')
-    var self = this;
+    var self = this
     var queryId = this.$route.params.id
-    if (!!queryId) {
-      nai.getQuery(queryId, function(resp) {
-        nai.log('Data retrieved', '[Query]');
-        nai.log(resp.data, '[Query]');
-        self.query = resp.data.data;
-        if (!!!self.query.theory) {
-          self.query.theory = {'_id': ''};
+    if (queryId) {
+      nai.getQuery(queryId, function (resp) {
+        nai.log('Data retrieved', '[Query]')
+        nai.log(resp.data, '[Query]')
+        self.query = resp.data.data
+        if (!self.query.theory) {
+          self.query.theory = { '_id': '' }
         } else {
-          //register all colors for already available vocabulary
-          _.uniqBy(self.query.autoVocabulary, 'full').forEach(function(voc) {
-           let term = voc.full;
-           self.insertTermStyle(term);
-        });
+          // register all colors for already available vocabulary
+          _.uniqBy(self.query.autoVocabulary, 'full').forEach(function (voc) {
+            let term = voc.full
+            self.insertTermStyle(term)
+          })
         }
         self.lastSavedQuery = _.cloneDeep(self.query)
         // if theory was freshly created, edit=true is set as GET parameter
         // so enable edit mode for all contents
         if (self.$route.query.edit) {
-          self.doEditTitle();
-          self.doEditAssumptions();
-          self.doEditGoal();
+          self.doEditTitle()
+          self.doEditAssumptions()
+          self.doEditGoal()
         }
-        self.loadedQuery = true;
+        self.loadedQuery = true
       }, nai.handleResponse())
 
-      nai.getTheories(function(resp) {
-        nai.log('Theory Data retrieved', '[Query]');
-        nai.log(resp.data, '[Query]');
-        self.theories = resp.data.data;
-        
+      nai.getTheories(function (resp) {
+        nai.log('Theory Data retrieved', '[Query]')
+        nai.log(resp.data, '[Query]')
+        self.theories = resp.data.data
+
         // get connetives for annotator
-        nai.getConnectives(function(resp) {
-          let connectives = resp.data.data;
+        nai.getConnectives(function (resp) {
+          let connectives = resp.data.data
           self.connectives = connectives
-        }, nai.handleResponse());
-        
-        self.loadedTheories = true;
-      }, function(error) {
+        }, nai.handleResponse())
+
+        self.loadedTheories = true
+      }, function (error) {
         nai.log(error, '[Query]')
-      });
+      })
     } else {
       // This should not happen
-      nai.log('No id given, aborting.', '[Query]');
+      nai.log('No id given, aborting.', '[Query]')
     }
 
-    unloadHandler = function(event) {
+    unloadHandler = function (event) {
       if (!_.isEqual(self.query, self.lastSavedQuery)) {
-        event.preventDefault();
-        event.returnValue = '';
+        event.preventDefault()
+        event.returnValue = ''
       }
     }
-    window.addEventListener("beforeunload", unloadHandler);
+    window.addEventListener('beforeunload', unloadHandler)
     nai.log('Unload handler created', '[Query]')
   }
 }
-

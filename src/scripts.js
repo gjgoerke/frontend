@@ -1,47 +1,43 @@
-var hlin = function() {
-  var elem = $(this);
-  var factClasses = elem.attr("class").split(" ").filter(id => id.startsWith("hl-fact-"));
+var hlin = function () {
+  var elem = $(this)
+  var factClasses = elem.attr('class').split(' ').filter(id => id.startsWith('hl-fact-'))
   if (!!factClasses && factClasses.length == 1) {
-    var f = "."+factClasses[0];
-    $(f).each(function() {
-      $(this).addClass("hl-form-active");
-    });
-    return;
+    var f = '.' + factClasses[0]
+    $(f).each(function () {
+      $(this).addClass('hl-form-active')
+    })
+    return
   }
-  var vocClasses = elem.attr("class").split(" ").filter(id => id.startsWith("hl-voc-"));
+  var vocClasses = elem.attr('class').split(' ').filter(id => id.startsWith('hl-voc-'))
   if (!!vocClasses && vocClasses.length == 1) {
-    var f = "."+vocClasses[0];
-    $(f).each(function() {
-      $(this).addClass("hl-vocabulary-active");
-    });
-    return;
+    var f = '.' + vocClasses[0]
+    $(f).each(function () {
+      $(this).addClass('hl-vocabulary-active')
+    })
   }
 }
-var hlout = function() {
-  var elem = $(this);
-  var factClasses = elem.attr("class").split(" ").filter(id => id.startsWith("hl-fact-"));
+var hlout = function () {
+  var elem = $(this)
+  var factClasses = elem.attr('class').split(' ').filter(id => id.startsWith('hl-fact-'))
   if (!!factClasses && factClasses.length == 1) {
-    var f = "."+factClasses[0];
-    $(f).each(function() {
-      $(this).removeClass("hl-form-active");
-    });
-    return;
+    var f = '.' + factClasses[0]
+    $(f).each(function () {
+      $(this).removeClass('hl-form-active')
+    })
+    return
   }
-  var vocClasses = elem.attr("class").split(" ").filter(id => id.startsWith("hl-voc-"));
+  var vocClasses = elem.attr('class').split(' ').filter(id => id.startsWith('hl-voc-'))
   if (!!vocClasses && vocClasses.length == 1) {
-    var f = "."+vocClasses[0];
-    $(f).each(function() {
-      $(this).removeClass("hl-vocabulary-active");
-    });
-    return;
+    var f = '.' + vocClasses[0]
+    $(f).each(function () {
+      $(this).removeClass('hl-vocabulary-active')
+    })
   }
 }
 
-$(function(){
-  var elems = $('.hl').hover(hlin, hlout);
+$(function () {
+  var elems = $('.hl').hover(hlin, hlout)
 })
-
-
 
 /*
 const regex = /Id\(Ob\((.+)\)\)/gm;
@@ -55,7 +51,7 @@ while ((m = regex.exec(str)) !== null) {
     if (m.index === regex.lastIndex) {
         regex.lastIndex++;
     }
-    
+
     // The result can be accessed through the `m`-variable.
     m.forEach((match, groupIndex) => {
         console.log(`Found match, group ${groupIndex}: ${match}`);

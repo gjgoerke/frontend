@@ -1,17 +1,17 @@
 var ex1 = {
-    id: 1,
+  id: 1,
   title: 'International Sale of Goods',
   comment: 'first formalization by Tomer',
   lastEdit: new Date(),
   vocabulary: [
     { vid: 1, symbol: 'D', desc: 'the seller delivers the goods, hands over the documents and transfers the \
-          property according to the procedure described in the contract'},
-    { vid: 2, symbol: 'D0.1', desc: 'the contract requires the seller to take care of the carriage of goods'},
-    { vid: 3, symbol: 'D0.2', desc: 'the contract relates to goods to be produced at a particular place'}
+          property according to the procedure described in the contract' },
+    { vid: 2, symbol: 'D0.1', desc: 'the contract requires the seller to take care of the carriage of goods' },
+    { vid: 3, symbol: 'D0.2', desc: 'the contract relates to goods to be produced at a particular place' }
   ],
   facts: [
-    { fid: 1, desc: 'It must be the case that the seller delivers the goods, hand over any documents relating to them and transfer the property in the goods, as required by the contract and this Convention', formalization: 'Id(Ob(D))'},
-    { fid: 2, desc: 'It must be the case that the buyer pays for the goods', formalization: 'Id(Ob(P))'}
+    { fid: 1, desc: 'It must be the case that the seller delivers the goods, hand over any documents relating to them and transfer the property in the goods, as required by the contract and this Convention', formalization: 'Id(Ob(D))' },
+    { fid: 2, desc: 'It must be the case that the buyer pays for the goods', formalization: 'Id(Ob(P))' }
   ],
   queries: [
     {
@@ -31,7 +31,7 @@ var ex1 = {
         'D0.1', 'D1', '~ D1.1'
       ],
       goal: 'Ob(D1.2)'
-    }  
+    }
   ],
   lastVocId: 3,
   lastFactId: 2,
@@ -45,13 +45,13 @@ var ex2 = {
   lastEdit: new Date(),
   vocabulary: [
     { vid: 1, symbol: 'D', desc: 'the seller delivers the goods, hands over the documents and transfers the \
-          property according to the procedure described in the contract'},
-    { vid: 2, symbol: 'D0.1', desc: 'the contract requires the seller to take care of the carriage of goods'},
-    { vid: 3, symbol: 'D0.2', desc: 'the contract relates to goods to be produced at a particular place'}
+          property according to the procedure described in the contract' },
+    { vid: 2, symbol: 'D0.1', desc: 'the contract requires the seller to take care of the carriage of goods' },
+    { vid: 3, symbol: 'D0.2', desc: 'the contract relates to goods to be produced at a particular place' }
   ],
   facts: [
-    { fid: 1, desc: 'It must be the case that the seller delivers the goods, hand over any documents relating to them and transfer the property in the goods, as required by the contract and this Convention', formalization: 'Id(Ob(D))'},
-    { fid: 2, desc: 'It must be the case that the seller delivers the goods, hand over any documents relating to them and transfer the property in the goods, as required by the contract and this Convention', formalization: 'Id(Ob(D))'}
+    { fid: 1, desc: 'It must be the case that the seller delivers the goods, hand over any documents relating to them and transfer the property in the goods, as required by the contract and this Convention', formalization: 'Id(Ob(D))' },
+    { fid: 2, desc: 'It must be the case that the seller delivers the goods, hand over any documents relating to them and transfer the property in the goods, as required by the contract and this Convention', formalization: 'Id(Ob(D))' }
   ],
   queries: [
     {
@@ -62,7 +62,7 @@ var ex2 = {
         'D0.1', 'D1', '~ D1.1'
       ],
       goal: 'Ob(D1.2)'
-    }     
+    }
   ],
   lastVocId: 3,
   lastFactId: 2,

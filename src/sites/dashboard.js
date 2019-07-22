@@ -1,5 +1,5 @@
 const dashboard = {
-  data: function() {
+  data: function () {
     return {
       dashboardLoaded: false,
       theories: [],
@@ -9,118 +9,118 @@ const dashboard = {
     }
   },
   methods: {
-    ////////////////////////////////////////////////
+    /// /////////////////////////////////////////////
     // Theory stuff
-    createTheory: function() {
-      nai.createFreshTheory(this.onTheoryCreateSuccess, this.onTheoryCreateFail);
+    createTheory: function () {
+      nai.createFreshTheory(this.onTheoryCreateSuccess, this.onTheoryCreateFail)
     },
-    onTheoryCreateSuccess: function(resp) {
-      nai.log('Theory created', '[App]');
-      nai.log(resp, '[App]');
-      if (!!resp.data) {
-        var id = resp.data.data._id;
-        router.push({ path: '/theory/'+id, query: { edit: true } })
+    onTheoryCreateSuccess: function (resp) {
+      nai.log('Theory created', '[App]')
+      nai.log(resp, '[App]')
+      if (resp.data) {
+        var id = resp.data.data._id
+        router.push({ path: '/theory/' + id, query: { edit: true } })
       } else {
         // error handling, unexpected return
         nai.log('theory creation failed', '[App]')
       }
     },
-    onTheoryCreateFail: function(error) {
+    onTheoryCreateFail: function (error) {
       console.log(error)
     },
-    onTheoryDelete: function(theory) {    
+    onTheoryDelete: function (theory) {
       nai.deleteTheory(theory, this.onTheoryDeleteSuccess(theory), this.onTheoryDeleteError)
     },
-    onTheoryDeleteSuccess: function(theory) {
+    onTheoryDeleteSuccess: function (theory) {
       var self = this
-      return function(resp) {
+      return function (resp) {
         // reflect update locally
-        self.theories.splice(self.theories.indexOf(theory),1)
-        nai.log('Theory ' + theory.name + ' deleted', '[App]');
+        self.theories.splice(self.theories.indexOf(theory), 1)
+        nai.log('Theory ' + theory.name + ' deleted', '[App]')
       }
     },
-    onTheoryDeleteError: function(error) {
+    onTheoryDeleteError: function (error) {
       nai.handleResponse()(error)
     },
-    onTheoryClone: function(theory) {
+    onTheoryClone: function (theory) {
       nai.cloneTheory(theory, this.onTheoryCloneSuccess(theory), this.onTheoryCloneError)
     },
-    onTheoryCloneSuccess: function(theory) {
+    onTheoryCloneSuccess: function (theory) {
       var self = this
-      return function(resp) {
-        nai.log('Theory created', '[App]');
-        nai.log(resp, '[App]');
-        if (!!resp.data) {
+      return function (resp) {
+        nai.log('Theory created', '[App]')
+        nai.log(resp, '[App]')
+        if (resp.data) {
           var newTheory = {
-            name: theory.name + " (Clone)",
+            name: theory.name + ' (Clone)',
             description: theory.description,
             _id: resp.data.data.theory._id,
             lastUpdate: new Date()
-          };
-          self.theories.push(newTheory);
+          }
+          self.theories.push(newTheory)
         } else {
           // error handling, unexpected return
           nai.log('unexpected theory creation response', '[App]')
         }
       }
     },
-    onTheoryCloneError: function(error) {
+    onTheoryCloneError: function (error) {
       nai.handleResponse()(error)
     },
-    ////////////////////////////////////////////////
+    /// /////////////////////////////////////////////
     // Query stuff
-    createQuery: function() {
-      nai.createFreshQuery(this.onQueryCreateSuccess, this.onQueryCreateFail);
+    createQuery: function () {
+      nai.createFreshQuery(this.onQueryCreateSuccess, this.onQueryCreateFail)
     },
-    onQueryCreateSuccess: function(resp) {
-      nai.log('Query created', '[App]');
-      nai.log(resp, '[App]');
-      if (!!resp.data) {
-        var id = resp.data.data._id;
-        router.push({ path: '/query/'+id, query: { edit: true } })
+    onQueryCreateSuccess: function (resp) {
+      nai.log('Query created', '[App]')
+      nai.log(resp, '[App]')
+      if (resp.data) {
+        var id = resp.data.data._id
+        router.push({ path: '/query/' + id, query: { edit: true } })
       } else {
         // error handling, unexpected return
         nai.log('query creation failed', '[App]')
       }
     },
-    onQueryCreateFail: function(error) {
+    onQueryCreateFail: function (error) {
       nai.log(error, '[App]')
     },
-    onQueryDelete: function(query) {    
+    onQueryDelete: function (query) {
       nai.deleteQuery(query, this.onQueryDeleteSuccess(query), this.onQueryDeleteError)
     },
-    onQueryDeleteSuccess: function(query) {
+    onQueryDeleteSuccess: function (query) {
       var self = this
-      return function(resp) {
+      return function (resp) {
         // reflect update locally
-        self.queries.splice(self.queries.indexOf(query),1)
-        nai.log('Query ' + query.name + ' deleted', '[App]');
+        self.queries.splice(self.queries.indexOf(query), 1)
+        nai.log('Query ' + query.name + ' deleted', '[App]')
       }
     },
-    onQueryDeleteError: function(error) {
+    onQueryDeleteError: function (error) {
       nai.handleResponse()(error)
     },
-    /////////////////////
-    /////////////////////
-    onCloneModalFinish: function() {
-      nai.log("modal finish");
-      
-      this.showModal = false;
+    /// //////////////////
+    /// //////////////////
+    onCloneModalFinish: function () {
+      nai.log('modal finish')
+
+      this.showModal = false
     },
-    onCloneModalCancel: function() {
-      nai.log("modal cancel");
-      this.showModal = false;
+    onCloneModalCancel: function () {
+      nai.log('modal cancel')
+      this.showModal = false
     },
-    showTheoryCloneWindows: function() {
-      //this.showModal = true;
+    showTheoryCloneWindows: function () {
+      // this.showModal = true;
     }
   },
   computed: {
-    theoryRows: function() {
-      return Math.ceil(this.theories.length / 3);
+    theoryRows: function () {
+      return Math.ceil(this.theories.length / 3)
     },
-    queryRows: function() {
-      return Math.ceil(this.queries.length / 3);
+    queryRows: function () {
+      return Math.ceil(this.queries.length / 3)
     }
   },
   template: `
@@ -236,30 +236,30 @@ const dashboard = {
     </div>
   `,
   created: function () {
-    this.$on('delete-theory', this.onTheoryDelete);
-    this.$on('clone-theory', this.onTheoryClone);
-    this.$on('delete-query', this.onQueryDelete);
-    this.$on('modal-ok', this.onCloneModalFinish);
-    this.$on('modal-cancel', this.onCloneModalCancel);
+    this.$on('delete-theory', this.onTheoryDelete)
+    this.$on('clone-theory', this.onTheoryClone)
+    this.$on('delete-query', this.onQueryDelete)
+    this.$on('modal-ok', this.onCloneModalFinish)
+    this.$on('modal-cancel', this.onCloneModalCancel)
     nai.log('Dashboard mounted', '[App]')
-    var self = this;
-    nai.initDashboard(function(resp) {
-      nai.log('User infos loaded', '[App]');
+    var self = this
+    nai.initDashboard(function (resp) {
+      nai.log('User infos loaded', '[App]')
       nai.log(resp.data, '[App]')
-      if (!!resp.data.data) {
-        self.theories = resp.data.data.theories;
-        self.queries = resp.data.data.queries;
-        self.dashboardLoaded = true;
+      if (resp.data.data) {
+        self.theories = resp.data.data.theories
+        self.queries = resp.data.data.queries
+        self.dashboardLoaded = true
       } else {
         nai.log('could not retrieve user data', '[App]')
       }
-    }, nai.handleResponse(null, function(error) {
-        self.dashboardLoaded = true;
-        self.error = `<b>Error</b>: Could not connect to NAI back-end. 
+    }, nai.handleResponse(null, function (error) {
+      self.dashboardLoaded = true
+      self.error = `<b>Error</b>: Could not connect to NAI back-end. 
                      Please try to reload and contact the system
                      administrator if this problem persists.`
-        self.queries = null;
-        self.theories = null
-      }, null))
+      self.queries = null
+      self.theories = null
+    }, null))
   }
 }

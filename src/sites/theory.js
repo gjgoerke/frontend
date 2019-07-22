@@ -1,5 +1,5 @@
 const theory = {
-  data: function() {
+  data: function () {
     return {
       showSidePanelComponent: false,
 
@@ -12,17 +12,17 @@ const theory = {
       editFacts: false,
 
       saving: false,
-      saveResponse: {show: false, type: '', message: '', timeout: 0},
+      saveResponse: { show: false, type: '', message: '', timeout: 0 },
 
       consistencyCheckRunning: false,
-      consistencyResponse: {show: false, type: '', message: '', timeout: 0},
+      consistencyResponse: { show: false, type: '', message: '', timeout: 0 },
 
       independenceCheckRunning: false,
-      independenceResponse: {show: false, type: '', message: '', timeout: 0},
+      independenceResponse: { show: false, type: '', message: '', timeout: 0 },
 
-      annotationColors: ['#5C97BF','#00AA55','#F64747','#B381B3','#1BA39C','#FF00FF',
-                         '#D252B2','#D46A43','#00A4A6','#D4533B','#939393','#AA8F00',
-                         '#D47500','#E26A6A','#009FD4','#5D995D'],
+      annotationColors: ['#5C97BF', '#00AA55', '#F64747', '#B381B3', '#1BA39C', '#FF00FF',
+        '#D252B2', '#D46A43', '#00A4A6', '#D4533B', '#939393', '#AA8F00',
+        '#D47500', '#E26A6A', '#009FD4', '#5D995D'],
       lastAnnotationColor: -1,
       connectives: null,
       activeTab: 0
@@ -30,30 +30,30 @@ const theory = {
   },
   methods: {
     /* general stuff */
-    back: function() {
+    back: function () {
       if (!_.isEqual(this.theory, this.lastSavedTheory)) {
-        nai.log("Theory was changed", "[Theory]")
-        var response = window.confirm("You have unsaved changed. Are you sure you want to leave this page?")
+        nai.log('Theory was changed', '[Theory]')
+        var response = window.confirm('You have unsaved changed. Are you sure you want to leave this page?')
         if (response) {
-         window.removeEventListener("beforeunload", unloadHandler);
-         nai.log("Event listener removed", "[Theory]");
-         router.push('/dashboard')
+          window.removeEventListener('beforeunload', unloadHandler)
+          nai.log('Event listener removed', '[Theory]')
+          router.push('/dashboard')
         }
       } else {
-        nai.log("Theory unchanged", "[Theory]")
-        window.removeEventListener("beforeunload", unloadHandler);
-        nai.log("Event listener removed", "[Theory]");
+        nai.log('Theory unchanged', '[Theory]')
+        window.removeEventListener('beforeunload', unloadHandler)
+        nai.log('Event listener removed', '[Theory]')
         router.push('/dashboard')
       }
     },
-    toggleSidePanelComponent: function() {
-      this.showSidePanelComponent = !this.showSidePanelComponent;
+    toggleSidePanelComponent: function () {
+      this.showSidePanelComponent = !this.showSidePanelComponent
     },
-    doneLoading: function() {
+    doneLoading: function () {
       this.loaded = true
     },
-    saveTheory: function(onSuccess, onError) {
-      var self = this;
+    saveTheory: function (onSuccess, onError) {
+      var self = this
       var updatedTheory = {
         _id: this.theoryId,
         name: this.theoryName,
@@ -63,209 +63,209 @@ const theory = {
         formalization: this.theoryFormalization
       }
       // Show save-in-progress icon
-      this.saving = true;
+      this.saving = true
       // Call API
-      //nai.log('is saved equal to before updated? ' + _.isEqual(self.lastSavedTheory, self.theory))
-      nai.saveTheory(updatedTheory, function(resp) {
-        self.saveResponse = {show: true, type: 'success', message: 'Theory successfully saved', timeout: 3000};
-        nai.getTheory(self.theoryId, function(resp) {
-          nai.log('Save-get retrieved', '[Theory]');
-          self.theory = resp.data.data;
-          self.saving = false;
+      // nai.log('is saved equal to before updated? ' + _.isEqual(self.lastSavedTheory, self.theory))
+      nai.saveTheory(updatedTheory, function (resp) {
+        self.saveResponse = { show: true, type: 'success', message: 'Theory successfully saved', timeout: 3000 }
+        nai.getTheory(self.theoryId, function (resp) {
+          nai.log('Save-get retrieved', '[Theory]')
+          self.theory = resp.data.data
+          self.saving = false
           self.lastSavedTheory = _.cloneDeep(self.theory)
           nai.log('Update successful', '[Theory]')
-        }, function(error) {
-          nai.log('save-get error', '[Theory]'); // not too bad, just ignore
-          self.saving = false;
+        }, function (error) {
+          nai.log('save-get error', '[Theory]') // not too bad, just ignore
+          self.saving = false
           self.lastSavedTheory = _.cloneDeep(self.theory)
           nai.log('Update successful', '[Theory]')
-        });
-        if (!!onSuccess) { onSuccess() } // Run passed callback if existent
-      }, function(error) {
+        })
+        if (onSuccess) { onSuccess() } // Run passed callback if existent
+      }, function (error) {
         if (!!error.response && !!error.response.data.error) {
-          self.saveResponse = {show: true, type: 'danger', message: 'Theory not saved: ' + error.response.data.error};
+          self.saveResponse = { show: true, type: 'danger', message: 'Theory not saved: ' + error.response.data.error }
         } else {
-          self.saveResponse = {show: true, type: 'danger', message: 'Theory not saved, an error occurred: ' + error};
+          self.saveResponse = { show: true, type: 'danger', message: 'Theory not saved, an error occurred: ' + error }
         }
-        self.saving = false;
+        self.saving = false
         nai.log('Update error, response: ', '[Theory]')
         nai.log(error, '[Theory]')
-        if (!!onError) { onError() } // Run passed callback if existent
-      });
+        if (onError) { onError() } // Run passed callback if existent
+      })
       // Disable all editing
       this.finishedEditTitle()
       this.finishedEditVoc()
       this.finishedEditFacts()
     },
     /* title/description stuff */
-    doEditTitle: function() {
-      this.editTitle = true;
+    doEditTitle: function () {
+      this.editTitle = true
     },
-    finishedEditTitle: function() {
-      this.editTitle = false;
+    finishedEditTitle: function () {
+      this.editTitle = false
     },
-    toggleEditTitle: function() {
-      (this.editTitle) ? this.finishedEditTitle() : this.doEditTitle();
+    toggleEditTitle: function () {
+      (this.editTitle) ? this.finishedEditTitle() : this.doEditTitle()
     },
     /* vocabulary stuff */
-    addLineToVoc: function() {
-      this.theoryVoc.push({symbol: '', original: ''});
-      this.doEditVoc();
+    addLineToVoc: function () {
+      this.theoryVoc.push({ symbol: '', original: '' })
+      this.doEditVoc()
     },
-    doEditVoc: function() {
-      this.editVoc = true;
+    doEditVoc: function () {
+      this.editVoc = true
     },
-    finishedEditVoc: function() {
-      this.editVoc = false;
+    finishedEditVoc: function () {
+      this.editVoc = false
     },
-    toggleEditVoc: function() {
-      (this.editVoc) ? this.finishedEditVoc() : this.doEditVoc();
+    toggleEditVoc: function () {
+      (this.editVoc) ? this.finishedEditVoc() : this.doEditVoc()
     },
-    vocDelButtonClick: function(index) {
-      this.theoryVoc.splice(index,1)
+    vocDelButtonClick: function (index) {
+      this.theoryVoc.splice(index, 1)
     },
     /* fact stuff */
-    toggleSelectAll: function() {
+    toggleSelectAll: function () {
       var toggle = this.$refs.selectAllBox.checked
       for (let f of this.theoryFormalization) {
         f.active = toggle
       }
     },
-    addLineToFacts: function() {
-      this.theoryFormalization.push({forumla: '', original: '', active: true});
-      this.doEditFacts();
+    addLineToFacts: function () {
+      this.theoryFormalization.push({ forumla: '', original: '', active: true })
+      this.doEditFacts()
     },
-    doEditFacts: function() {
-      this.editFacts = true;
+    doEditFacts: function () {
+      this.editFacts = true
     },
-    finishedEditFacts: function() {
-      this.editFacts = false;
+    finishedEditFacts: function () {
+      this.editFacts = false
     },
-    toggleEditFacts: function() {
-      (this.editFacts) ? this.finishedEditFacts() : this.doEditFacts();
+    toggleEditFacts: function () {
+      (this.editFacts) ? this.finishedEditFacts() : this.doEditFacts()
     },
-    factDelButtonClick: function(index) {
+    factDelButtonClick: function (index) {
       // remove from fact list
-      this.theoryFormalization.splice(index,1)
+      this.theoryFormalization.splice(index, 1)
     },
-    runConsistencyCheck: function() {
-      var self = this;
+    runConsistencyCheck: function () {
+      var self = this
       // Hide previous response if still showing
-      self.consistencyResponse = {show: false, type: '', message: '', timeout: 0};
+      self.consistencyResponse = { show: false, type: '', message: '', timeout: 0 }
       // check if we need to save the theory first
       if (!_.isEqual(this.theory, this.lastSavedTheory)) {
         // latest version not saved to backend, so update first
-        this.saveTheory(function() {
-            self.runConsistencyCheck0();
-          },
-          function() {
-            var msg = 'Consistency check cannot be conducted because there was an error during saving.';
-            self.consistencyResponse = {show: true, type: 'danger', message: msg};
-          }
-        );
+        this.saveTheory(function () {
+          self.runConsistencyCheck0()
+        },
+        function () {
+          var msg = 'Consistency check cannot be conducted because there was an error during saving.'
+          self.consistencyResponse = { show: true, type: 'danger', message: msg }
+        }
+        )
       } else {
         // no local changes, so run consistency check
-        this.runConsistencyCheck0();
+        this.runConsistencyCheck0()
       }
     },
-    runConsistencyCheck0: function() {
-      var self = this;
-      this.consistencyCheckRunning = true;
-      nai.checkConsistency(this.theoryId, function(resp) {
-        if (!!resp.data) {
-          let data = resp.data;
-          let timeout = undefined;
+    runConsistencyCheck0: function () {
+      var self = this
+      this.consistencyCheckRunning = true
+      nai.checkConsistency(this.theoryId, function (resp) {
+        if (resp.data) {
+          let data = resp.data
+          let timeout
           if (data.type == 'success') { timeout = 3000 }
-          self.consistencyResponse = {show: true, type: data.type, message: data.message, timeout: timeout};
+          self.consistencyResponse = { show: true, type: data.type, message: data.message, timeout: timeout }
         } else {
-          self.consistencyResponse = {show: true, type: 'warning', message: '<b>Unexpected reponse</b>: ' + resp};
+          self.consistencyResponse = { show: true, type: 'warning', message: '<b>Unexpected reponse</b>: ' + resp }
         }
         self.consistencyCheckRunning = false
-      }, function(error) {
-        if (!!error.response.data) {
+      }, function (error) {
+        if (error.response.data) {
           let msg = error.response.data.error
-          self.consistencyResponse = {show: true, type: 'danger', message: msg.replace(/\n/g,'<br>')};
+          self.consistencyResponse = { show: true, type: 'danger', message: msg.replace(/\n/g, '<br>') }
         } else {
-          self.consistencyResponse = {show: true, type: 'danger', message: '<b>Unexpected error</b>: ' + error};
+          self.consistencyResponse = { show: true, type: 'danger', message: '<b>Unexpected error</b>: ' + error }
         }
         self.consistencyCheckRunning = false
       })
     },
-    runIndependenceCheck: function(item) {
-      var self = this;
+    runIndependenceCheck: function (item) {
+      var self = this
       // Hide previous response if still showing
-      self.independenceCheckResponse = {show: false, type: '', message: '', timeout: 0};
+      self.independenceCheckResponse = { show: false, type: '', message: '', timeout: 0 }
       // check if we need to save the theory first
       if (!_.isEqual(this.theory, this.lastSavedTheory)) {
         // latest version not saved to backend, so update first
-        this.saveTheory(function() {
-            self.runIndependenceCheck0(item);
-          },
-          function() {
-            var msg = 'Consistency check cannot be conducted because there was an error during saving.';
-            self.independenceCheckResponse = {show: true, type: 'danger', message: msg};
-          }
-        );
+        this.saveTheory(function () {
+          self.runIndependenceCheck0(item)
+        },
+        function () {
+          var msg = 'Consistency check cannot be conducted because there was an error during saving.'
+          self.independenceCheckResponse = { show: true, type: 'danger', message: msg }
+        }
+        )
       } else {
         // no local changes, so run consistency check
-        this.runIndependenceCheck0(item);
+        this.runIndependenceCheck0(item)
       }
     },
-    runIndependenceCheck0: function(item) {
+    runIndependenceCheck0: function (item) {
       var self = this
       this.independenceCheckRunning = true
-      nai.checkIndependence(this.theoryId, item._id,  function(resp) {
-        if (!!resp.data) {
-          let data = resp.data;
-          let timeout = undefined;
+      nai.checkIndependence(this.theoryId, item._id, function (resp) {
+        if (resp.data) {
+          let data = resp.data
+          let timeout
           if (data.type == 'success') { timeout = 3000 }
-          self.independenceResponse = {show: true, type: data.type, message: data.message, timeout: timeout};
+          self.independenceResponse = { show: true, type: data.type, message: data.message, timeout: timeout }
         } else {
-          self.independenceResponse = {show: true, type: 'warning', message: '<b>Unexpected reponse</b>: ' + resp};
+          self.independenceResponse = { show: true, type: 'warning', message: '<b>Unexpected reponse</b>: ' + resp }
         }
         self.independenceCheckRunning = false
-      }, function(error) {
-        if (!!error.response.data) {
+      }, function (error) {
+        if (error.response.data) {
           let msg = error.response.data.error
-          self.consistencyResponse = {show: true, type: 'danger', message: msg.replace(/\n/g,'<br>')};
+          self.consistencyResponse = { show: true, type: 'danger', message: msg.replace(/\n/g, '<br>') }
         } else {
-          self.independenceResponse = {show: true, type: 'warning', message: '<b>Unexpected reponse</b>: ' + error};
+          self.independenceResponse = { show: true, type: 'warning', message: '<b>Unexpected reponse</b>: ' + error }
         }
         self.independenceCheckRunning = false
       })
     },
-    onAnnotate: function(origin, info, depth) {
-      let original = origin.original;
-      if (!!info.term) {
+    onAnnotate: function (origin, info, depth) {
+      let original = origin.original
+      if (info.term) {
         // term annotation
-        let term = info.term;
+        let term = info.term
 
-        let idx = _.findIndex(this.theoryAutoVoc, function(voc) {
-            return (voc.symbol == term);
-         });
+        let idx = _.findIndex(this.theoryAutoVoc, function (voc) {
+          return (voc.symbol == term)
+        })
         if (idx < 0) {
-          this.insertTermStyle(term);
-          this.theoryAutoVoc.push({original: original, full: term});
+          this.insertTermStyle(term)
+          this.theoryAutoVoc.push({ original: original, full: term })
         }
         if (depth == 1) {
           // Also add as formula
-          this.theoryAutoFormalization.push({original: original, formula: term})
+          this.theoryAutoFormalization.push({ original: original, formula: term })
         }
       } else {
         // connective annotation
-        if (depth != 1) return;
-        this.theoryAutoFormalization.push({original: original, formula: ''})
+        if (depth != 1) return
+        this.theoryAutoFormalization.push({ original: original, formula: '' })
       }
     },
-    insertTermStyle: function(term) {
-      let color = this.nextAnnotationColor();
-      this.auxStyles.insertRule('.annotator-term[data-term="'+ term +'"] { background-color: ' + color + '; }');
+    insertTermStyle: function (term) {
+      let color = this.nextAnnotationColor()
+      this.auxStyles.insertRule('.annotator-term[data-term="' + term + '"] { background-color: ' + color + '; }')
     },
-    nextAnnotationColor: function() {
-      this.lastAnnotationColor = (this.lastAnnotationColor + 1) % this.annotationColors.length;
-      return this.annotationColors[this.lastAnnotationColor];
+    nextAnnotationColor: function () {
+      this.lastAnnotationColor = (this.lastAnnotationColor + 1) % this.annotationColors.length
+      return this.annotationColors[this.lastAnnotationColor]
     }
-    /*registerAnnotator: function() {
+    /* registerAnnotator: function() {
       var self = this;
       // debug test
       this.$refs.annotator.get.on('selection-change', function(range, oldRange, source) {
@@ -284,63 +284,63 @@ const theory = {
     */
   },
   computed: {
-    theoryName: function() {
+    theoryName: function () {
       return this.theory.name
     },
-    theoryId: function() {
+    theoryId: function () {
       return this.theory._id
     },
-    theoryLastUpdate: function() {
-      return new Date(this.theory.lastUpdate);
+    theoryLastUpdate: function () {
+      return new Date(this.theory.lastUpdate)
     },
-    theoryDesc: function() {
+    theoryDesc: function () {
       return this.theory.description
     },
-    theoryContent: function() {
+    theoryContent: function () {
       return this.theory.content
     },
-    theoryVoc: function() {
+    theoryVoc: function () {
       return this.theory.vocabulary
     },
-    theoryAutoVoc: function() {
+    theoryAutoVoc: function () {
       return this.theory.autoVocabulary
     },
-    theoryFormalization: function() {
+    theoryFormalization: function () {
       return this.theory.formalization
     },
-    theoryAutoFormalization: function() {
+    theoryAutoFormalization: function () {
       return this.theory.autoFormalization
     },
-    vocDelButtonTitle: function() {
+    vocDelButtonTitle: function () {
       if (this.editVoc) {
-        return "Delete entry"
+        return 'Delete entry'
       } else {
-        return "Enable edit mode for deleting"
+        return 'Enable edit mode for deleting'
       }
     },
-    vocDelButtonStyle: function() {
+    vocDelButtonStyle: function () {
       if (this.editVoc) {
-        return ""
+        return ''
       } else {
-        return "cursor: not-allowed"
+        return 'cursor: not-allowed'
       }
     },
-    factDelButtonTitle: function() {
+    factDelButtonTitle: function () {
       if (this.editFacts) {
-        return "Delete entry"
+        return 'Delete entry'
       } else {
-        return "Enable edit mode for deleting"
+        return 'Enable edit mode for deleting'
       }
     },
-    factDelButtonStyle: function() {
+    factDelButtonStyle: function () {
       if (this.editFacts) {
-        return ""
+        return ''
       } else {
-        return "cursor: not-allowed"
+        return 'cursor: not-allowed'
       }
     },
-    auxStyles: function() {
-      return document.getElementById('additionalStyles').sheet;
+    auxStyles: function () {
+      return document.getElementById('additionalStyles').sheet
     }
   },
   template: `
@@ -643,49 +643,49 @@ const theory = {
       </keep-alive>
     </div>
   `,
-  mounted: function() {
-    this.$on('theory-annotate', this.onAnnotate);
+  mounted: function () {
+    this.$on('theory-annotate', this.onAnnotate)
   },
   created: function () {
     nai.log('Created', '[Theory]')
-    var self = this;
+    var self = this
     var theoryId = this.$route.params.id
-    if (!!theoryId) {
-      nai.getTheory(theoryId, function(resp) {
-        nai.log('Data retrieved', '[Theory]');
-        nai.log(resp.data, '[Theory]');
-        self.theory = resp.data.data;
+    if (theoryId) {
+      nai.getTheory(theoryId, function (resp) {
+        nai.log('Data retrieved', '[Theory]')
+        nai.log(resp.data, '[Theory]')
+        self.theory = resp.data.data
         self.lastSavedTheory = _.cloneDeep(self.theory)
         // if theory was freshly created, edit=true is set as GET parameter
         // so enable edit mode for all contents
         if (self.$route.query.edit) {
-          self.doEditTitle();
-          self.doEditVoc();
-          self.doEditFacts();
+          self.doEditTitle()
+          self.doEditVoc()
+          self.doEditFacts()
         }
-        //register all colors for already available vocabulary
-        _.uniqBy(self.theoryAutoVoc, 'full').forEach(function(voc) {
-           let term = voc.full;
-           self.insertTermStyle(term);
-        });
+        // register all colors for already available vocabulary
+        _.uniqBy(self.theoryAutoVoc, 'full').forEach(function (voc) {
+          let term = voc.full
+          self.insertTermStyle(term)
+        })
         // get connetives for annotator
-        nai.getConnectives(function(resp) {
-          let connectives = resp.data.data;
+        nai.getConnectives(function (resp) {
+          let connectives = resp.data.data
           self.connectives = connectives
           self.doneLoading()
-        }, nai.handleResponse());
+        }, nai.handleResponse())
       }, nai.handleResponse())
     } else {
       // This should not happen
-      nai.log('No id given, aborting.', '[Theory]');
+      nai.log('No id given, aborting.', '[Theory]')
     }
-    unloadHandler = function(event) {
+    unloadHandler = function (event) {
       if (!_.isEqual(self.theory, self.lastSavedTheory)) {
-        event.preventDefault();
-        event.returnValue = '';
+        event.preventDefault()
+        event.returnValue = ''
       }
     }
-    window.addEventListener("beforeunload", unloadHandler);
+    window.addEventListener('beforeunload', unloadHandler)
     nai.log('Unload handler created', '[Theory]')
   }
 }
