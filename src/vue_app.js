@@ -128,7 +128,7 @@ nai = new function () { var lib = this;
     };
     this.$http.post('/theories', freshTheory).then(success).catch(fail)
   }
-  
+
   lib.cloneTheory = function(theory, success, fail) {
     this.log('Create new theory from clone', '[App]');
     var theoryId = theory._id
@@ -176,12 +176,12 @@ nai = new function () { var lib = this;
     this.log('Check consistency of ' + theoryId, '[Theory]');
     nai.$http.get('/theories/' + theoryId + '/consistency').then(success).catch(fail)
   }
-  
+
   lib.checkIndependence = function(theoryId, itemId, success, fail) {
     this.log('Check independence of ' + itemId + ' (from '+ theoryId +')', '[Theory]');
     nai.$http.get('/theories/' + theoryId + '/independent/' + itemId).then(success).catch(fail)
   }
-  
+
   lib.getConnectives = function(success, fail) {
     this.log('Get connectives', '[Theory]');
     nai.$http.get('/general/connectives').then(success).catch(fail)
@@ -218,7 +218,7 @@ nai = new function () { var lib = this;
 
   // Queiry-related queries END
   //////////////////////////////////////////////////////
-  
+
   /// MISC:
   lib.highlightTerm = function(term) {
     var elems = document.querySelectorAll('[data-term="'+ term +'"]')
@@ -237,7 +237,7 @@ nai = new function () { var lib = this;
 ///////////
 // Set-up routing.
 // All paths are linked to specific components that are set-up
-// in the respective src/pages/*.js
+// in the respective src/sites/*.js
 // Paths with "requireAuth: true" will require the user to be logged in for being accessed
 // and route to a login page if not logged in (with subsequent forwarding to the initially
 // requested page).
@@ -255,6 +255,8 @@ const router = new VueRouter({
     //{ path: '/theory', component: theory, meta: { requiresAuth: true } },
     { path: '/theory/:id', component: theory, meta: { requiresAuth: true } },
     { path: '/query/:id', component: query, meta: { requiresAuth: true } },
+    { path: '/AllTheories', component: AllTheories, meta: { requiresAuth: true } },
+    { path: '/dashboard2', component: dashboard2, meta: { requiresAuth: true } },
 
     // default catch all
     { path: '*', redirect: '/' }
@@ -328,4 +330,3 @@ var app = new Vue({
     this.$on('login-event', this.onLogin);
   }
 })
-

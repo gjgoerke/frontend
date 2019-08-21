@@ -116,6 +116,10 @@ border: 1px dashed gray;
   text-transform: uppercase;
 }
 
+.nav-link-hov:hover {
+  color: #5f5f5f;
+}
+
 /*
  ******** Small Sidebar **********
  */
@@ -341,3 +345,50 @@ tr.tr-disabled {
   height: 30px;
   width: 30px;
 }
+
+.dash-outer-container {
+  margin-top: 48px;
+  margin-right: auto;
+  margin-left: 10px;;
+  transition: padding 800ms;
+  overflow-x: hidden;
+}
+
+.dash-inner-container {
+  padding-left: 5%;
+  padding-right: 5%;
+}
+.show-small-nav {
+  margin-left: 50px;
+}
+.swiper-container {
+  height: 500px;
+}
+.swipe-button {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  background-color: white;
+  border-radius: 15px;
+  height: 30px;
+  width: 30px;
+  box-shadow:  1px 1px 1px 1px #ccc;
+  z-index: 5;
+}
+.swipe-button-prev {
+  left: 0px;
+  top: 50%;
+}
+.swipe-button-next {
+  right: 0px;
+  top: 50%;
+}
+.s-b-icon {
+  display: block;
+  margin: auto;
+}
+/* .list-group-item .list-group-item-action {
+  border-left: none;
+  border-right: none;
+} */

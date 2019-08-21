@@ -343,8 +343,49 @@ Vue.component('theory-card', {
     }
   },
   methods: {
+    ///////////////
+    // Query stuff
+    //////////////
+    createQuery: function() {
+      console.log('create-query')
+      nai.createFreshQuery(this.onQueryCreateSuccess, this.onQueryCreateFail);
+    },
+    onQueryCreateSuccess: function(resp) {
+      nai.log('Query created', '[App]');
+      nai.log(resp, '[App]');
+      if (!!resp.data) {
+        var id = resp.data.data._id;
+        router.push({ path: '/query/'+id, query: { edit: true } })
+      } else {
+        // error handling, unexpected return
+        nai.log('query creation failed', '[App]')
+      }
+    },
+    onQueryCreateFail: function(error) {
+      nai.log(error, '[App]')
+    },
+    onQueryDelete: function(query) {
+      nai.deleteQuery(query, this.onQueryDeleteSuccess(query), this.onQueryDeleteError)
+    },
+    onQueryDeleteSuccess: function(query) {
+      var self = this
+      return function(resp) {
+        // reflect update locally
+        self.queries.splice(self.queries.indexOf(query),1)
+        nai.log('Query ' + query.name + ' deleted', '[App]');
+      }
+    },
+    onQueryDeleteError: function(error) {
+      nai.handleResponse()(error)
+    },
+    openQuery: function(queryId) {
+      router.push('/query/' + queryId)
+    },
+
+
     deleteMe: function() {
-      this.$parent.$emit('delete-theory', this.theory)
+      console.log(this.theory.name + 'deleteMe()')
+      this.$emit('delete-theory', this.theory)
     },
     requestDelete: function() {
       this.deleteRequested = true;
@@ -362,7 +403,7 @@ Vue.component('theory-card', {
       router.push('/theory/'+this.theory._id)
     },
     clone: function() {
-      this.$parent.$emit('clone-theory', this.theory)
+      this.$emit('clone-theory', this.theory)
     }
   },
   computed: {
@@ -388,14 +429,18 @@ Vue.component('theory-card', {
     })
   },
   template: `
-    <div class="card" style="background-color:#f4f4f4">
-      <div class="paint-splotch" :class="'qt'+this.theory._id"></div>
+    <div class="card border-dark" style="background-color:#f4f4f4">
       <div class="card-body">
         <h4 class="card-title">{{ theory.name }}</h4>
         <h6 class="card-subtitle small mb-0 text-muted">Last edited: {{ updated }}</h6>
         <hr class="my-1">
         <p class="card-text">{{ description }}</p>
-
+        <!--<hr>
+        <div>
+          <ul>
+            <li v-for:query in ></li>
+          </ul>
+        </div>-->
         <div class="btn-toolbar mb-2 mb-md-0 d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
           <button class="btn btn-sm btn-outline-secondary mb-1" v-on:click="clone">
           <span data-feather="copy"></span>
@@ -423,6 +468,23 @@ Vue.component('theory-card', {
               <span data-feather="book-open"></span> Open
             </button>
           </div>
+        </div>
+        <div class="card border-secondary">
+          <div class="card-header">
+          Queries
+          <a class="float-right" @click="createQuery()">
+            <feather-icon icon="plus"></feather-icon>
+          </a>
+        </div>
+
+          <ul class="list-group">
+            <li class="list-group-item list-group-item-action"  @click="openQuery(query._id)" v-for="(query, index) in theory.queries.slice(0,3)">
+              <a class="link">{{ query.name }}</a>
+              <div class="float-right text-muted font-weight-light" style="font-size: .8em; cursor: default;" v-if="index < theory.queries.length - 1 && index == 2">
+                (Show {{ theory.queries.length - (index + 1) }} more)
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -1171,6 +1233,13 @@ template:`
     <div class="sidebar-sticky d-flex flex-column align-content-center">
     <button class="navbar-toggler float-left mr-3" type="button" @click="$emit('show-large-nav')"><feather-icon icon="menu" class=""></feather-icon></button>
       <ul style="transform: translateX(-3px);" class="nav">
+        <slot name="returnToDashboard">
+          <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-1 mb-1 text-muted" v-on:click="$parent.$emit('go-back')" style="cursor:pointer">
+            <feather-icon icon="arrow-left"></feather-icon>
+            <a class="d-flex align-items-center text-muted">
+            </a>
+          </h6>
+        </slot>
         <slot name="links"></slot>
       </ul>
     </div>
@@ -1230,6 +1299,7 @@ Vue.component('sidebar',{
 
     <transition enter-active-class="animated fadeInRight" leave-active-class="animated.fast fadeOutRight">
       <small-sidebar v-if="!showLargeNav" v-on:show-large-nav="onShowLargeNav()">
+      <template v-slot:returnToDashboard><slot name="returnToDashboard"></slot></template>
         <template v-slot:links><slot name="smallNavLinks"></slot></template>
       </small-sidebar>
     </transition>
@@ -1292,5 +1362,96 @@ Vue.component('sort-button',{
       </div>
     </div>
   </div>
+  `
+});
+
+
+///////////////////////
+//Swipe component
+///////////////////////
+Vue.component('swipe-component', {
+  data: function() {
+    return {
+      // swiperSlides: [1,2,3,4,5],
+      swiperOption: {
+        mousewheel: false,
+        keyboard: true,
+        autoHeight: true,
+        slidesPerView: '4',
+        spaceBetween: 30,
+        navigation: {
+          nextEl: '.swiper-button-next-' + this.id,
+          prevEl: '.swiper-button-prev-' + this.id,
+        },
+        breakpoints: {
+          // Bootstrap sm (-1 pixel)
+          767: {
+             slidesPerView: 1,
+             spaceBetween: 10
+          },
+          // Bootstrap md
+          992: {
+             slidesPerView: 2,
+             spaceBetween: 20
+          },
+          // Bootstrap lg
+          1200: {
+             slidesPerView: 3,
+             spaceBetween: 30
+          }
+        }
+       }
+     }
+   },
+  methods: {
+    onDelete: function($event) {
+      this.$parent.$emit('delete-theory', $event);
+    },
+    onClone: function($event) {
+      this.$parent.$emit('clone-theory', $event);
+    }
+  },
+  computed: {
+    prev: function() {
+      return 'swiper-button-prev-' + this.id;
+    },
+    next: function() {
+      return 'swiper-button-next-' + this.id;
+    }
+  },
+  props: ['theories', 'queries', 'id'],
+  created: function() {
+    console.log(JSON.parse(JSON.stringify('theories: '+ this.theories)));
+  },
+  template:`
+  <div class="container-fluid position-relative">
+    <swiper class="swiper-container" :options="swiperOption">
+      <swiper-slide v-for="(t, index) in theories" :key="index">
+        <theory-card v-on:delete-theory="onDelete($event)" v-on:clone-theory="onClone($event)" :theory='t' :key="t._id"></theory-card>
+      </swiper-slide>
+    </swiper>
+    <div class="swipe-button swipe-button-prev" :class="prev"><span class="s-b-icon" data-feather="chevron-left"></span></div>
+    <div class="swipe-button swipe-button-next" :class="next"><span class="s-b-icon" data-feather="chevron-right"></span></div>
+  </div>
+    `
+})
+
+/////////////////////
+// Dash Control Panel
+/////////////////////
+Vue.component('control-panel', {
+  data: function() {
+    return {
+
+    }
+  },
+  template:`
+    <div class="container-fluid justify-content-center">
+      <div class="btn btn-outline-primary">
+        <feather-icon icon="plus"></feather-icon>
+        Create New Legislation
+      </div>
+      <div class="btn btn-outline-secondary">All Legislations</div>
+    </div>
   `
 });
