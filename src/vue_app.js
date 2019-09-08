@@ -276,6 +276,10 @@ router.beforeEach((to, from, next) => {
   }
 })
 
+//////////
+// Global event bus - Useful in particular for avoiding lots of "prop drilling."
+const eventBus = new Vue();
+
 ///////////
 // The main vue object of the front end application.
 ///////////
@@ -329,11 +333,14 @@ var app = new Vue({
   },
   created: function() {
     this.$on('login-event', this.onLogin);
-    eventBus.$on('delete-theory', (theory) => {
-      console.log('delete-theory eventBus' + theory._id)
+    eventBus.$on('delete-theory', (ref) => {
+      ref.$emit('delete-theory', ref.theory); // Dashboard component responds to this one. (need to fix) // XX
+      ref.$parent.$emit('delete-theory', ref.theory); // All theories component responds to this one.
     });
-    eventBus.$on('clone-theory', (theory) => {
-      
+    eventBus.$on('clone-theory', (ref) => {
+      console.log('cloneT eventBus');
+      ref.$emit('clone-theory', ref.theory);
+      ref.$parent.$emit('clone-theory', ref.theory);
     });
   }
 })

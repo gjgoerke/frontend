@@ -1,9 +1,6 @@
-const eventBus = new Vue();
-
 ///////////
 // Mixin for theory delete/clone etc on the dash and alltheories pages.
 //////////
-
 const dashboardMixin = {
   data: function() {
     return {
@@ -32,7 +29,7 @@ const dashboardMixin = {
       console.log(error)
     },
     onTheoryDelete: function(theory) {
-      console.log('onTheoryDelete()'); // XX
+      console.log('onTheoryDelete() [mixin]'); // XX
       nai.deleteTheory(theory, this.onTheoryDeleteSuccess(theory), this.onTheoryDeleteError)
     },
     onTheoryDeleteSuccess: function(theory) {
@@ -48,7 +45,7 @@ const dashboardMixin = {
       nai.handleResponse()(error)
     },
     onTheoryClone: function(theory) {
-      console.log('onTheoryClone() (mixin)'+theory) // XX
+      console.log('onTheoryClone() [mixin]'+theory) // XX
       nai.cloneTheory(theory, this.onTheoryCloneSuccess(theory), this.onTheoryCloneError);
     },
     onTheoryCloneSuccess: function(theory) {
@@ -103,7 +100,7 @@ const dashboardMixin = {
   },
   created: function() {
     this.$on('delete-theory', this.onTheoryDelete);
-    this.$on('clone-theory', this.onTheoryClone); // XX
+    this.$on('clone-theory', this.onTheoryClone);
     this.$on('delete-query', this.onQueryDelete);
     this.$on('modal-ok', this.onCloneModalFinish);
     this.$on('modal-cancel', this.onCloneModalCancel);

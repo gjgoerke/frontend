@@ -414,8 +414,8 @@ Vue.component('theory-card', {
     // Theory Stuff
     ///////////////
     deleteMe: function() {
-      eventBus.$emit('delete-theory', this.theory)
-      console.log('deleteMe()')
+      eventBus.$emit('delete-theory', this) // Pass ref. of self to eventBus for event propigation and access to theory.
+      console.log('deleteMe()') // XX
     },
     requestDelete: function() {
       console.log('delete requested.')
@@ -434,7 +434,8 @@ Vue.component('theory-card', {
       router.push('/theory/'+this.theory._id)
     },
     clone: function() {
-      this.$emit('clone-theory', this.theory)
+      console.log('clone-called') // XX
+      eventBus.$emit('clone-theory', this); // Pass ref. of self to eventBus for event propigation and access to theory.
     }
   },
   computed: {
@@ -1407,6 +1408,10 @@ Vue.component('swipe-component', {
         on: { // XX
           init: function () {
             app['mySwiper' + this.id] = this; // pass swiper instance to vm
+          },
+          destroy: function() {
+            $('#dashMain').addClass( "d-none" );
+             // Patches the issue where navigating from dashboard retains dom elements for a couple seconds. Not sure why this happens.
           }
         },
         observeSlideChildren: true,
@@ -1436,12 +1441,11 @@ Vue.component('swipe-component', {
   methods: {
     onDelete: function($event) {
       this.$parent.$emit('delete-theory', $event);
+      event.stopPropagation(); // Prevent opening the query.
       console.log('delete theory - swiper')
     },
     onClone: function($event) {
       this.$parent.$emit('clone-theory', $event);
-      console.log('clone theory - swiper') // XX
-      event.stopPropagation(); // Prevent opening the query.
     }
   },
   computed: {

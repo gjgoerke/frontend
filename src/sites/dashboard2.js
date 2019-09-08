@@ -7,7 +7,7 @@ const dashboard2 = {
   mixins:[dashboardMixin],
   template:
   `
-    <div  role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" :class="{'show-small-nav': !showLargeNav}">
+    <div id="dashMain" role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" :class="{'show-small-nav': !showLargeNav}">
       <div class="container-fluid">
         <h1>Dashboard</h1>
         <hr>
@@ -17,10 +17,10 @@ const dashboard2 = {
         <swipe-component id="1" v-if="dashboardLoaded && !!theories" :theories="orderedTheories('lastUpdate', 'desc')"></swipe-component>
         <p v-if="theories.length == 0"><em>No legislatures formalized yet. Click on "create new" above,
         to create a new formalization or import a publicly available one.</em></p>
-        <hr>
+      <!--  <hr>
         <h4>Top Public Legislations</h4>
         <swipe-component class="mb-5" id="2" v-if="dashboardLoaded && !!theories" :theories="orderedTheories('lastUpdate', 'desc')"></swipe-component>
-        <p v-if="theories.length == 0"><em>No public legislatures found.</em></p>
+        <p v-if="theories.length == 0"><em>No public legislatures found.</em></p> -->
       </div>
       <sidebar v-on:show-large-nav="onShowLargeNav()">
         <template v-slot:returnToDashboard><span></span></template>

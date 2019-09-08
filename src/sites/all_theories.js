@@ -21,13 +21,6 @@ const all_theories = {
         ascDescT: this.ascDescT
       }));
     },
-    onTheoryClone: function(theory) {
-      this.$emit('clone-theory', theory);
-    },
-    onDelete: function(theory) {
-      this.$emit('delete-theory', theory);
-      console.log('delete theory - swiper')
-    },
     // Called on mount if applicable loads the users last sort settings.
     loadSortSettings: function() {
       let self = this;
@@ -78,7 +71,7 @@ const all_theories = {
           to create a new formalization or import a publicly available one.</em></p>
           <div class="row" v-for="i in theoryRows" style="margin-bottom: 2em">
             <div class="col-sm-4" v-for="t in orderedTheories(orderByT, ascDescT).slice((i-1) * 3, i * 3)">
-              <theory-card v-bind:theory="t" :key="t._id" v-on:clone-theory="onTheoryClone($event)"></theory-card>
+              <theory-card v-bind:theory="t" :key="t._id"></theory-card>
             </div>
           </div>
         </div>

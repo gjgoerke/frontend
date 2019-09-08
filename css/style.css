@@ -139,7 +139,11 @@ border: 1px dashed gray;
   }
 }
 
-
+@media (min-width: 500) {
+  .show-small-nav {
+    margin-left: 50px;
+  }
+}
 
 /*
  * Content
@@ -352,10 +356,6 @@ tr.tr-disabled {
   margin-left: 10px;;
   transition: padding 800ms;
   overflow-x: hidden;
-}
-
-.show-small-nav {
-  margin-left: 50px;
 }
 .swiper-container {
   height: 500px;
