@@ -38,13 +38,13 @@ const theory = {
         if (response) {
          window.removeEventListener("beforeunload", unloadHandler);
          nai.log("Event listener removed", "[Theory]");
-         router.push('/dashboard')
+         router.go(-1);
         }
       } else {
         nai.log("Theory unchanged", "[Theory]")
         window.removeEventListener("beforeunload", unloadHandler);
         nai.log("Event listener removed", "[Theory]");
-        router.push('/dashboard')
+        router.go(-1);
       }
     },
     toggleSidePanelComponent: function() {
@@ -352,40 +352,40 @@ const theory = {
     <div class="d-flex" style="padding-right: 0px;">
       <div class="split-left mr-auto ml-auto">
 
-        <sidebar page="theory" v-on:go-back="back" v-on:show-large-nav="showLargeNav=!showLargeNav">
+        <sidebar v-on:go-back="back" v-on:show-large-nav="showLargeNav=!showLargeNav">
           <template v-slot:smallNavLinks>
             <li class="nav-item">
               <a class="nav-link" href="#" @click="activeTab = 0" title="Legislation">
-                <feather-icon icon="book"></feather-icon>
+                <i data-feather="book"></i>
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#" @click="activeTab = 1" title="Formalization">
-                <feather-icon icon="zap"></feather-icon>
+                <i data-feather="zap"></i>
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#" @click="activeTab = 2" title="Vocabulary">
-                <feather-icon icon="clipboard"></feather-icon>
+                <i data-feather="clipboard"></i>
               </a>
             </li>
           </template>
           <template v-slot:largeNavLinks>
             <li class="nav-item">
               <a class="nav-link" href="#" @click="activeTab = 0">
-                <feather-icon icon="book"></feather-icon>
+                <i data-feather="book"></i>
                 Legislation
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#" @click="activeTab = 1">
-                <feather-icon icon="zap"></feather-icon>
+                <i data-feather="zap"></i>
                 Formalization
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#" @click="activeTab = 2">
-                <feather-icon icon="clipboard"></feather-icon>
+                <i data-feather="clipboard"></i>
                 Vocabulary
               </a>
             </li>
@@ -645,6 +645,7 @@ const theory = {
   `,
   mounted: function() {
     this.$on('theory-annotate', this.onAnnotate);
+    feather.replace();
   },
   created: function () {
     nai.log('Created', '[Theory]')

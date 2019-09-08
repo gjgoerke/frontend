@@ -135,13 +135,14 @@ nai = new function () { var lib = this;
     this.$http.post('/theories/'+theoryId).then(success).catch(fail)
   }
 
-  lib.createFreshQuery = function(success, fail) {
+  lib.createFreshQuery = function(success, fail, theoryId) {
     this.log('Create fresh query', '[App]');
     var freshQuery = {
       name: 'New Query',
       description: '',
       assumptions: [],
-      goal: ''
+      goal: '',
+      theory: theoryId
     };
     this.log(freshQuery, '[App]');
     this.$http.post('/queries', freshQuery).then(success).catch(fail)
@@ -255,7 +256,7 @@ const router = new VueRouter({
     //{ path: '/theory', component: theory, meta: { requiresAuth: true } },
     { path: '/theory/:id', component: theory, meta: { requiresAuth: true } },
     { path: '/query/:id', component: query, meta: { requiresAuth: true } },
-    { path: '/AllTheories', component: AllTheories, meta: { requiresAuth: true } },
+    { path: '/all_theories', component: all_theories, meta: { requiresAuth: true } },
     { path: '/dashboard2', component: dashboard2, meta: { requiresAuth: true } },
 
     // default catch all
@@ -328,5 +329,11 @@ var app = new Vue({
   },
   created: function() {
     this.$on('login-event', this.onLogin);
+    eventBus.$on('delete-theory', (theory) => {
+      console.log('delete-theory eventBus' + theory._id)
+    });
+    eventBus.$on('clone-theory', (theory) => {
+      
+    });
   }
 })

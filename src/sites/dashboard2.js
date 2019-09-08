@@ -1,122 +1,33 @@
 const dashboard2 = {
   data: function() {
     return {
-      dashboardLoaded: false,
-      theories: [],
-      queries: [],
-      error: null,
-      showLargeNav: false,
+      dashboardLoaded: false
     }
   },
-  methods: {
-    createTheory: function() {
-      nai.createFreshTheory(this.onTheoryCreateSuccess, this.onTheoryCreateFail);
-    },
-    onTheoryCreateSuccess: function(resp) {
-      nai.log('Theory created', '[App]');
-      nai.log(resp, '[App]');
-      if (!!resp.data) {
-        var id = resp.data.data._id;
-        router.push({ path: '/theory/'+id, query: { edit: true } })
-      } else {
-        // error handling, unexpected return
-        nai.log('theory creation failed', '[App]')
-      }
-    },
-    onTheoryCreateFail: function(error) {
-      console.log(error)
-    },
-    onTheoryDelete: function(theory) {
-      console.log('onTheoryDelete()');
-      nai.deleteTheory(theory, this.onTheoryDeleteSuccess(theory), this.onTheoryDeleteError)
-    },
-    onTheoryDeleteSuccess: function(theory) {
-      var self = this
-      return function(resp) {
-        // reflect update locally
-        self.theories.splice(self.theories.indexOf(theory),1)
-        nai.log('Theory ' + theory.name + ' deleted', '[App]');
-      }
-    },
-    onTheoryDeleteError: function(error) {
-      nai.handleResponse()(error)
-    },
-    onTheoryClone: function(theory) {
-      nai.cloneTheory(theory, this.onTheoryCloneSuccess(theory), this.onTheoryCloneError)
-    },
-    onTheoryCloneSuccess: function(theory) {
-      var self = this
-      return function(resp) {
-        nai.log('Theory created', '[App]');
-        nai.log(resp, '[App]');
-        if (!!resp.data) {
-          var newTheory = {
-            name: theory.name + " (Clone)",
-            description: theory.description,
-            _id: resp.data.data.theory._id,
-            lastUpdate: new Date()
-          };
-          self.theories.push(newTheory);
-        } else {
-          // error handling, unexpected return
-          nai.log('unexpected theory creation response', '[App]')
-        }
-      }
-    },
-    onTheoryCloneError: function(error) {
-      nai.handleResponse()(error)
-    },
-    ////////////////////////////////////////////////
-    // Query stuff
-      // moved to theory-card
-    /////////////////////
-    /////////////////////
-    onCloneModalFinish: function() {
-      nai.log("modal finish");
-
-      this.showModal = false;
-    },
-    onCloneModalCancel: function() {
-      nai.log("modal cancel");
-      this.showModal = false;
-    },
-    showTheoryCloneWindows: function() {
-      //this.showModal = true;
-    },
-    onShowLargeNav: function() {
-      this.showLargeNav = !this.showLargeNav;
-    },
-    orderedTheories: function() {
-      return _.orderBy(this.theories, 'lastUpdate', 'desc');
-    },
-    openTheory: function(theoryId) {
-      router.push('/theory/'+theoryId);
-    },
-    openQuery: function(queryId) {
-      router.push('/query/'+queryId);
-    }
-
-  },
+  mixins:[dashboardMixin],
   template:
   `
-    <div class="dash-outer-container" :class="{'show-large-nav': showLargeNav, 'show-small-nav': !showLargeNav}">
-      <div class="container-fluid dash-inner-container">
+    <div  role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" :class="{'show-small-nav': !showLargeNav}">
+      <div class="container-fluid">
         <h1>Dashboard</h1>
         <hr>
-          <control-panel></control-panel>
+        <control-panel></control-panel>
         <hr>
         <h4>Last Updated</h4>
-        <swipe-component id="1" v-if="dashboardLoaded && !!theories" :theories="orderedTheories()" :queries="queries"></swipe-component>
+        <swipe-component id="1" v-if="dashboardLoaded && !!theories" :theories="orderedTheories('lastUpdate', 'desc')"></swipe-component>
+        <p v-if="theories.length == 0"><em>No legislatures formalized yet. Click on "create new" above,
+        to create a new formalization or import a publicly available one.</em></p>
         <hr>
         <h4>Top Public Legislations</h4>
-        <swipe-component id="2" v-if="dashboardLoaded && !!theories" :theories="orderedTheories()" :queries="queries"></swipe-component>
+        <swipe-component class="mb-5" id="2" v-if="dashboardLoaded && !!theories" :theories="orderedTheories('lastUpdate', 'desc')"></swipe-component>
+        <p v-if="theories.length == 0"><em>No public legislatures found.</em></p>
       </div>
       <sidebar v-on:show-large-nav="onShowLargeNav()">
         <template v-slot:returnToDashboard><span></span></template>
         <template v-slot:smallNavLinks>
             <li class="nav-item">
               <a class="nav-link" href="#legislatures">
-                <feather-icon icon="book"></feather-icon>
+                <i data-feather="book"></i>
               </a>
             </li>
         </template>
@@ -126,16 +37,16 @@ const dashboard2 = {
         <template v-slot:largeNavLinks>
           <li class="nav-item">
             <a class="nav-link" href="#legislatures">
-              <feather-icon icon="book"></feather-icon>
+              <i data-feather="book"></i>
               My Legislations
             </a>
           </li>
-          <ul class="list-unstyled mx-3 nav">
-            <li v-for="theory in theories">
+          <ul class="list-unstyled mx-3 nav d-block">
+            <li v-for="theory in orderedTheories('name','asc')">
             <a class="nav-link nav-link-hov" @click="openTheory(theory._id)" href="#">{{ theory.name }}</a>
               <ul class="list-unstyled ml-3">
-                <li v-for="query in theory.queries">
-                  <a style="font-weight: 300; padding-top: 0; padding-bottom: 0;" class="nav-link nav-link-hov" @click="openQuery(query._id)" href="#">{{ query.name }}</a>
+                <li v-for="query in orderedQueries(theory)">
+                  <a style="font-weight: 300; padding-top: 0; padding-bottom: 0;" class="nav-link nav-link-hov" @click="openQuery(query._id)" href="#">{{ truncatedName(query.name) }}</a>
                 </li>
               </ul>
             </li>
@@ -145,11 +56,6 @@ const dashboard2 = {
     </div>
   `,
   created: function () {
-    this.$on('delete-theory', this.onTheoryDelete);
-    this.$on('clone-theory', this.onTheoryClone);
-    this.$on('delete-query', this.onQueryDelete);
-    this.$on('modal-ok', this.onCloneModalFinish);
-    this.$on('modal-cancel', this.onCloneModalCancel);
     nai.log('Dashboard mounted', '[App]');
     var self = this;
     nai.initDashboard(function(resp) {
@@ -170,6 +76,5 @@ const dashboard2 = {
         self.queries = null;
         self.theories = null;
       }, null))
-
   }
 }

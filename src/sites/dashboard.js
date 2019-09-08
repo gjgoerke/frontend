@@ -186,7 +186,7 @@ const dashboard = {
     <div class="container-fluid">
       <div class="row">
 
-        <sidebar page="dashboard" v-on:show-large-nav="onShowLargeNav()">
+        <sidebar v-on:show-large-nav="onShowLargeNav()">
           <template v-slot:returnToDashboard><span></span></template>
           <template v-slot:smallNavLinks>
               <li class="nav-item">

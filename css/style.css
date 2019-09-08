@@ -354,10 +354,6 @@ tr.tr-disabled {
   overflow-x: hidden;
 }
 
-.dash-inner-container {
-  padding-left: 5%;
-  padding-right: 5%;
-}
 .show-small-nav {
   margin-left: 50px;
 }
@@ -376,6 +372,9 @@ tr.tr-disabled {
   box-shadow:  1px 1px 1px 1px #ccc;
   z-index: 5;
 }
+.swiper-button-disabled {
+  display: none;
+}
 .swipe-button-prev {
   left: 0px;
   top: 50%;
@@ -388,7 +387,34 @@ tr.tr-disabled {
   display: block;
   margin: auto;
 }
-/* .list-group-item .list-group-item-action {
-  border-left: none;
-  border-right: none;
-} */
+.list-group-item-action {
+  cursor: pointer;
+}
+.dropdown-item {
+  cursor: pointer;
+}
+.x-not-displayed {
+  font-size: .8em;
+  cursor: default;
+  transform: translateY(2px);
+}
+/* Cursor classes */
+.c-pointer {
+  cursor: pointer;
+ }
+.c-default {
+  cursor: default;
+}
+
+.qb-delete-wrapper {
+  position: absolute;
+  right: 3px;
+}
+.qb-clone-wrapper {
+  position: absolute;
+  right: 20px;
+}
+.qb-svg {
+  height: 1em;
+  width: 1em;
+}

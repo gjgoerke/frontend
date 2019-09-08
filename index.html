@@ -16,6 +16,8 @@
     <script src="/js/axios.min.js"></script>
     <script src="/js/feather.min.js"></script>
     <script src="/js/lodash_full.js"></script>
+    <script src="/js/mixins.js"></script>
+
     <style type="text/css" id="additionalStyles"></style>
     <title>Normative Reasoning</title>
   </head>
@@ -27,7 +29,7 @@
         <a class="navbar-brand col-sm-4 col-md-3 d-none d-sm-block" style="text-align:center" href="/index.html">Normative Reasoning</a>
         <ul class="navbar-nav px-3">
           <li class="nav-item text-nowrap" v-if="loggedIn">
-            <a class="nav-link" style="cursor:pointer" v-on:click="doLogout">
+            <a class="nav-link c-pointer" v-on:click="doLogout">
             <span data-feather="log-out"></span> Logout</a>
           </li>
         </ul>
@@ -37,25 +39,16 @@
       </transition>
       <!--<img src="/img/unilu.png" alt="University of Luxembourg" style="z-index:1000;position:fixed;bottom:0;left:0" class="col-sm-3 col-md-2 mb-2">-->
 
-      <div style="height:1.8em;background-color:white;position:fixed;font-size:x-small;right:0;bottom:0" class="mb-0 mr-2">
+      <div style="height:1.8em;background-color:white;position:fixed;font-size:x-small;right:0;bottom:0;z-index:5;" class="mb-0 mr-2">
         <em>Copyright © <a href="https://www.uni.lu/">Université du Luxembourg</a> 2019. All rights reserved.</em>
       </div>
     </div>
     <script>
     feather.replace();
     </script>
-    <script src="https://unpkg.com/vueperslides"></script>
-    <link href="https://unpkg.com/vueperslides/dist/vueperslides.css" rel="stylesheet">
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.7/css/swiper.min.css" rel="stylesheet">
-    <!-- Include the Swiper library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.7/js/swiper.min.js"></script>
-    <!-- Swiper JS Vue -->
-    <script src="https://cdn.jsdelivr.net/npm/vue-awesome-swiper@3.1.2/dist/vue-awesome-swiper.js"></script>
-    <script type="text/javascript">
-      Vue.use(window.VueAwesomeSwiper)
-    </script>
-
+    <link href="/css/swiper.min.css" rel="stylesheet">
+    <script src="/js/swiper.min.js"></script>
+    <script src="/js/vue-awesome-swiper.js"></script>
     <script src="/js/vue-tippy.min.js"></script>
     <link rel="stylesheet" href="/css/tippy-light-border-theme.css" />
     <script src="/js/split.min.js"></script>
@@ -66,8 +59,11 @@
     <script src="/src/sites/dashboard.js"></script>
     <script src="/src/sites/theory.js"></script>
     <script src="/src/sites/query.js"></script>
-    <script src="/src/sites/AllTheories.js"></script>
+    <script src="/src/sites/all_theories.js"></script>
     <script src="src/sites/dashboard2.js"></script>
     <script src="/src/vue_app.js"></script>
+    <script type="text/javascript">
+      Vue.use(window.VueAwesomeSwiper)
+    </script>
   </body>
 </html>

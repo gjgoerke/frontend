@@ -40,13 +40,13 @@ const query = {
         if (response) {
          window.removeEventListener("beforeunload", unloadHandler);
          nai.log("Event listener removed", "[Query]");
-         router.push('/dashboard')
+         router.go(-1);
         }
       } else {
         nai.log("Query unchanged", "[Query]")
         window.removeEventListener("beforeunload", unloadHandler);
         nai.log("Event listener removed", "[Query]");
-        router.push('/dashboard')
+        router.go(-1);
       }
     },
     saveQuery: function(onSuccess, onError) {
@@ -231,7 +231,7 @@ const query = {
       return this.loadedQuery && this.loadedTheories;
     },
     queryName: function() {
-      return this.query.name
+      return this.query.name;
     },
     queryId: function() {
       return this.query._id
@@ -302,17 +302,17 @@ const query = {
           <template v-slot:smallNavLinks>
             <li class="nav-item">
               <a class="nav-link" href="#" @click="activeTab = 0">
-                <feather-icon icon="book"></feather-icon>
+                <i data-feather="book"></i>
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#" @click="activeTab = 1">
-                <feather-icon icon="zap"></feather-icon>
+              <i data-feather="zap"></i>
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#" @click="activeTab = 2">
-                <feather-icon icon="clipboard"></feather-icon>
+              <i data-feather="clipboard"></i>
               </a>
             </li>
           </template>
@@ -320,19 +320,19 @@ const query = {
           <template v-slot:largeNavLinks>
             <li class="nav-item">
               <a class="nav-link" href="#" @click="activeTab = 0">
-                <feather-icon icon="book"></feather-icon>
+              <i data-feather="book"></i>
                 Query editor
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#" @click="activeTab = 1">
-                <feather-icon icon="zap"></feather-icon>
+              <i data-feather="zap"></i>
                 Formalization
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#" @click="activeTab = 2">
-                <feather-icon icon="clipboard"></feather-icon>
+              <i data-feather="clipboard"></i>
                 Vocabulary
               </a>
             </li>
